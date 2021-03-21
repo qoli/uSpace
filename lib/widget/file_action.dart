@@ -133,37 +133,37 @@ class _DeleteButton extends HookWidget {
           return;
         }
         Navigator.pop(context);
-        // 確認刪除
         await file.delete();
         onRemove?.call();
       },
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 200),
-        vsync: tickerProvider,
-        child: AnimatedContainer(
-          decoration: BoxDecoration(
-            color: confirmDelete.value
-                ? Colors.red
-                : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          duration: const Duration(milliseconds: 300),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                const Icon(
-                  Ionicons.trash_outline,
-                  size: 20,
-                ),
-                if (confirmDelete.value)
-                  const Padding(
-                    padding: EdgeInsets.only(left: 14),
-                    child:
-                        Text('Delete', style: TextStyle(color: Colors.white)),
-                  ),
-              ],
-            ),
+      child: AnimatedContainer(
+        decoration: BoxDecoration(
+          color: confirmDelete.value
+              ? Colors.red
+              : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        duration: const Duration(milliseconds: 300),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              const Icon(
+                Ionicons.trash_outline,
+                size: 20,
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                vsync: tickerProvider,
+                child: confirmDelete.value
+                    ? const Padding(
+                        padding: EdgeInsets.only(left: 14),
+                        child: Text('Delete',
+                            style: TextStyle(color: Colors.white)),
+                      )
+                    : const SizedBox(),
+              ),
+            ],
           ),
         ),
       ),
