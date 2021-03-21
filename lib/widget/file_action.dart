@@ -21,11 +21,20 @@ class FileAction extends HookWidget {
   final String fileSize;
   final VoidCallback? onRemove;
 
+  Future<String> formatChanged() async {
+    var fileStat = await FileStat.stat(file.path);
+    return DateFormat('yyyy-MM-dd hh:mm').format(fileStat.changed);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var stat = useFuture(useMemoized(() => FileStat.stat(file.path), [file]),
-        initialData: null);
-    final f = DateFormat('yyyy-MM-dd hh:mm');
+    var date = useFuture(
+      useMemoized(
+        formatChanged,
+        [file],
+      ),
+      initialData: '',
+    );
     final name = file.path.replaceAll('${directory.path}/', '');
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -54,7 +63,7 @@ class FileAction extends HookWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '$fileSize - ${stat.data != null ? f.format(stat.data!.changed) : ''}',
+                      '$fileSize - ${date.data}',
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         height: 1.5,
