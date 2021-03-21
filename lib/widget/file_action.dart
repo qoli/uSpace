@@ -90,37 +90,6 @@ class FileAction extends HookWidget {
                         // 確認刪除
                         await file.delete();
                         onRemove?.call();
-
-                        // showPlatformDialog(
-                        //   context: context,
-                        //   builder: (_) => BasicDialogAlert(
-                        //     title: const Text('Delete'),
-                        //     content: Text(name),
-                        //     actions: <Widget>[
-                        //       BasicDialogAction(
-                        //         title: Text(
-                        //           'Cancel',
-
-                        //           style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
-                        //         ),
-                        //         onPressed: () {
-                        //           Navigator.pop(context);
-                        //         },
-                        //       ),
-                        //       BasicDialogAction(
-                        //         title: Text(
-                        //           'Delete',
-
-                        //           style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
-                        //         ),
-                        //         onPressed: () async {
-                        //           Navigator.pop(context);
-
-                        //         },
-                        //       ),
-                        //     ],
-                        //   ),
-                        // );
                       },
                     ),
                   ),
