@@ -85,11 +85,11 @@ class FileWidget extends HookWidget {
 
     var lengthFuture = useMemoizedFuture(
       () async {
-        if (await FileSystemEntity.isDirectory(file.path)) return 0;
+        if (isDir) return 0;
         return await File(file.path).length();
       },
       0,
-      keys: [file],
+      keys: [file, isDir],
     );
 
     var size = useMemoized(
@@ -100,7 +100,7 @@ class FileWidget extends HookWidget {
           return '';
         }
       },
-      [lengthFuture.data],
+      [lengthFuture.data, isDir],
     );
 
     return GestureDetector(

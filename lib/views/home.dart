@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
-import 'package:tuple/tuple.dart';
 import 'package:uSpace/server/http_server_provider.dart';
 import 'package:uSpace/server/server_status.dart';
 import 'package:uSpace/utils/hook.dart';
@@ -16,6 +15,28 @@ import 'package:uSpace/widget/file_widget.dart';
 import 'package:uSpace/widget/text_light.dart';
 
 import 'about.dart';
+
+class _State {
+  const _State(
+    this.directory, [
+    this.fileCount = 0,
+    this.files = const [],
+  ]);
+
+  final Directory? directory;
+  final List<_FileState> files;
+  final int fileCount;
+}
+
+class _FileState {
+  _FileState(
+    this.file,
+    this.isDirectory,
+  );
+
+  final FileSystemEntity file;
+  final bool isDirectory;
+}
 
 class HomePage extends HookWidget {
   HomePage({
@@ -28,28 +49,39 @@ class HomePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final port = useState(8020);
+
     final listRefreshKey = useState(Object());
+
     final status = useValueListenable(useMemoized(
       () => HttpServerProvider(port.value, () {
         listRefreshKey.value = Object();
       }),
       [port.value],
     ));
-    final filesTuple = useMemoizedFuture(
+
+    final state = useMemoizedFuture(
       () async {
         final directory = await getApplicationDocumentsDirectory();
         var files = await directory.list().toList();
-        return Tuple2(directory, files);
+        var list = await Future.wait(files.map((e) async =>
+            _FileState(e, await FileSystemEntity.isDirectory(e.path))));
+
+        return _State(
+          directory,
+          list.where((element) => !element.isDirectory).length,
+          list,
+        );
       },
-      const Tuple2(null, null),
+      const _State(null),
       keys: [listRefreshKey.value],
     );
+
     final localIP = useMemoizedFuture(
       () => getLocalIpAddress(port.value),
       null,
       keys: [port.value],
     );
-    var listCount = filesTuple.data?.item2?.length ?? 0;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -122,20 +154,20 @@ class HomePage extends HookWidget {
             Expanded(
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(child: TextLight('Files ($listCount)')),
-                  if (listCount > 0)
+                  SliverToBoxAdapter(
+                      child: TextLight('Files (${state.data!.fileCount})')),
+                  if (state.data!.fileCount > 0)
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) => FileWidget(
-                          directory: filesTuple.data!.item1!,
-                          file: filesTuple.data!.item2![index],
+                          directory: state.data!.directory!,
+                          file: state.data!.files[index].file,
                           onRemove: () {
                             listRefreshKey.value = Object();
                           },
-                          isDir: FileSystemEntity.isDirectorySync(
-                              filesTuple.data!.item2![index].path),
+                          isDir: state.data!.files[index].isDirectory,
                         ),
-                        childCount: listCount,
+                        childCount: state.data!.fileCount,
                       ),
                     )
                   else
