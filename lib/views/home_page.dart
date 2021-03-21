@@ -10,6 +10,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
+import 'package:uSpace/views/about.dart';
 
 enum ServerType { starting, running, uplopading, stoping, error }
 
@@ -40,8 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   init() async {
     _statusText(ServerType.starting);
-    await _getLocalFiles();
-    await Future.delayed(Duration(milliseconds: 800));
+    _getLocalFiles();
+    await Future.delayed(Duration(milliseconds: 600));
     localIP = await _getLocalIpAddress();
     await _httpServer();
   }
@@ -56,6 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
           widget.title,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+              icon: Icon(Ionicons.help_outline),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutPage()));
+              })
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -73,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (localIP != '') textLeftRight('$localIP:8020', callback: _copy),
             if (localIP == '') Text('...'),
             SizedBox(height: 8),
-            if (filesListWidget != null) Divider(),
+            Divider(),
             SizedBox(height: 8),
             Expanded(
               child: ListView(
@@ -81,7 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   if (filesListWidget != null) textLight('Files (${filesListWidget.length})'),
                   if (filesListWidget != null) ...filesListWidget,
-                  if (filesListWidget != null && filesListWidget.length == 0) Text('No Files'),
+                  if (filesListWidget != null && filesListWidget.length == 0)
+                    Text(
+                      'No Files',
+                      style: TextStyle(height: 1.5),
+                    ),
                 ],
               ),
             ),
