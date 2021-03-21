@@ -31,12 +31,14 @@ class FileWidget extends HookWidget {
     required this.file,
     this.onRemove,
     this.isDir = false,
+    required this.changed,
   }) : super(key: key);
 
   final Directory directory;
   final FileSystemEntity file;
   final VoidCallback? onRemove;
   final bool isDir;
+  final DateTime changed;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +115,7 @@ class FileWidget extends HookWidget {
             directory: directory,
             file: file,
             fileSize: size,
+                changed:changed,
             onRemove: onRemove,
           )),
         );

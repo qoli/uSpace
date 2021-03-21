@@ -24,18 +24,20 @@ class _State {
   ]);
 
   final Directory? directory;
-  final List<_FileState> files;
+  final List<FileState> files;
   final int fileCount;
 }
 
-class _FileState {
-  _FileState(
+class FileState {
+  FileState(
     this.file,
     this.isDirectory,
+    this.changed,
   );
 
   final FileSystemEntity file;
   final bool isDirectory;
+  final DateTime changed;
 }
 
 class HomePage extends HookWidget {
@@ -63,8 +65,14 @@ class HomePage extends HookWidget {
       () async {
         final directory = await getApplicationDocumentsDirectory();
         var files = await directory.list().toList();
-        var list = await Future.wait(files.map((e) async =>
-            _FileState(e, await FileSystemEntity.isDirectory(e.path))));
+        var list = await Future.wait(files.map(
+          (e) async => FileState(
+            e,
+            await FileSystemEntity.isDirectory(e.path),
+            (await FileStat.stat(e.path)).changed,
+          ),
+        ));
+        list.sort((a, b) => b.changed.compareTo(a.changed));
 
         return _State(
           directory,
@@ -162,10 +170,11 @@ class HomePage extends HookWidget {
                         (BuildContext context, int index) => FileWidget(
                           directory: state.data!.directory!,
                           file: state.data!.files[index].file,
+                          isDir: state.data!.files[index].isDirectory,
+                          changed:state.data!.files[index].changed,
                           onRemove: () {
                             listRefreshKey.value = Object();
                           },
-                          isDir: state.data!.files[index].isDirectory,
                         ),
                         childCount: state.data!.fileCount,
                       ),

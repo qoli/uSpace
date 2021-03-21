@@ -6,7 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:share/share.dart';
-import 'package:uSpace/utils/hook.dart';
 
 class FileAction extends HookWidget {
   const FileAction({
@@ -14,25 +13,21 @@ class FileAction extends HookWidget {
     required this.directory,
     required this.file,
     required this.fileSize,
+    required this.changed,
     this.onRemove,
   }) : super(key: key);
 
   final Directory directory;
   final FileSystemEntity file;
   final String fileSize;
+  final DateTime changed;
   final VoidCallback? onRemove;
-
-  Future<String> formatChanged() async {
-    var fileStat = await FileStat.stat(file.path);
-    return DateFormat('yyyy-MM-dd hh:mm').format(fileStat.changed);
-  }
 
   @override
   Widget build(BuildContext context) {
-    var date = useMemoizedFuture(
-      formatChanged,
-      '',
-      keys: [file],
+    final date = useMemoized(
+      () => DateFormat('yyyy-MM-dd hh:mm').format(changed),
+      [changed],
     );
     final name = file.path.replaceAll('${directory.path}/', '');
     return Padding(
@@ -62,7 +57,7 @@ class FileAction extends HookWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '$fileSize - ${date.data}',
+                      '$fileSize - $date',
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         height: 1.5,
