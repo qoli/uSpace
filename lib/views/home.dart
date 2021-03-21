@@ -40,13 +40,6 @@ class HomePage extends HookWidget {
         () async {
           final directory = await getApplicationDocumentsDirectory();
           var files = await directory.list().toList();
-
-          var isDirectoryList = await Future.wait(
-              files.map((e) => FileSystemEntity.isDirectory(e.path)));
-          var asMap = isDirectoryList.asMap()
-            ..removeWhere((key, value) => value);
-          files = asMap.keys.map((e) => files[e]).toList();
-
           return Tuple2(directory, files);
         },
         [listRefreshKey.value],
@@ -102,7 +95,7 @@ class HomePage extends HookWidget {
             GestureDetector(
               onTap: () {
                 if (localIP.data == null) return;
-                var url = 'http://$localIP:$port';
+                var url = 'http://${localIP.data}:${port.value}';
                 Clipboard.setData(ClipboardData(text: url));
                 Share.share(url);
               },

@@ -89,9 +89,9 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           debugPrint('${data.filename}');
 
           if (data.content.runtimeType == String) {
-            fFile.writeAsString(data.content, mode: FileMode.write);
+            await fFile.writeAsString(data.content, mode: FileMode.write);
           } else {
-            fFile.writeAsBytes(data.content, mode: FileMode.write);
+            await fFile.writeAsBytes(data.content, mode: FileMode.write);
           }
 
           value = ServerStatus.running;
