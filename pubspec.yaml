@@ -19,8 +19,9 @@ dependencies:
   share: ^2.0.1
   mime: ^1.0.0
   ionicons: ^0.1.2
-  adaptive_dialog: ^0.10.0+5
   url_launcher: ^6.0.2
+  flutter_hooks: ^0.16.0
+  tuple: ^2.0.0
 
 dev_dependencies:
   flutter_test:

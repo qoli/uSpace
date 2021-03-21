@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uSpace/views/home.dart';
 import 'package:flutter/services.dart';
-import 'package:uSpace/views/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,10 +16,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'uSpace',
-      theme: lightTheme, // Provide light theme.
-      darkTheme: ThemeData.dark(), // Provide dark theme.
+      theme: lightTheme,
+      // Provide light theme.
+      darkTheme: ThemeData.dark(),
+      // Provide dark theme.
       themeMode: ThemeMode.system,
-      home: MyHomePage(title: 'uSpace'),
+      home: HomePage(title: 'uSpace'),
     );
   }
 
