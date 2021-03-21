@@ -15,11 +15,14 @@ class Empty extends StatelessWidget {
               ),
             ),
           ),
-          Text(
+          const Text(
             'No Files',
-            style: TextStyle(height: 1.5, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              height: 1.5,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           TextLight('Open web and upload your files.'),
         ],
       );

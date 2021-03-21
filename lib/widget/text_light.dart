@@ -6,7 +6,7 @@ class TextLight extends Text {
   TextLight(String data)
       : super(
     data,
-    style: TextStyle(
+    style: const TextStyle(
       color: Colors.grey,
       fontWeight: FontWeight.w300,
     ),

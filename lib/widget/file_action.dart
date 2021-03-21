@@ -26,7 +26,7 @@ class FileAction extends HookWidget {
     var stat = useFuture(useMemoized(() => FileStat.stat(file.path), [file]),
         initialData: null);
     final f = DateFormat('yyyy-MM-dd hh:mm');
-    final name = file.path.replaceAll(directory.path + '/', '');
+    final name = file.path.replaceAll('${directory.path}/', '');
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Container(
@@ -44,13 +44,15 @@ class FileAction extends HookWidget {
                       width: MediaQuery.of(context).size.width - 120,
                       child: Text(
                         name,
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, height: 1.5),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          height: 1.5,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       '$fileSize - ${stat.data != null ? f.format(stat.data!.changed) : ''}',
                       style: TextStyle(
@@ -62,7 +64,7 @@ class FileAction extends HookWidget {
                     ),
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   height: 48,
                   width: 48,
@@ -75,7 +77,7 @@ class FileAction extends HookWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
-                      icon: Icon(Ionicons.trash_outline),
+                      icon: const Icon(Ionicons.trash_outline),
                       iconSize: 20,
                       onPressed: () async {
                         Navigator.pop(context);
@@ -87,7 +89,7 @@ class FileAction extends HookWidget {
                 )
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -102,10 +104,10 @@ class FileAction extends HookWidget {
                     Navigator.pop(context);
                     Share.shareFiles([file.path]);
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "Share",
+                      'Share',
                       style: TextStyle(
                         color: Colors.white,
                       ),

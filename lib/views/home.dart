@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -44,7 +42,7 @@ class HomePage extends HookWidget {
         },
         [listRefreshKey.value],
       ),
-      initialData: Tuple2(null, null),
+      initialData: const Tuple2(null, null),
     );
     var localIP = useFuture(
       useMemoized(
@@ -60,11 +58,11 @@ class HomePage extends HookWidget {
         elevation: 0,
         title: Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
-            icon: Icon(Ionicons.help_outline),
+            icon: const Icon(Ionicons.help_outline),
             onPressed: () {
               Navigator.push(
                 context,
@@ -84,13 +82,13 @@ class HomePage extends HookWidget {
           children: <Widget>[
             TextLight('Status:'),
             Text(
-              ServerStatusStringMap[status]!,
+              serverStatusStringMap[status]!,
               style: const TextStyle(
                 height: 1.5,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextLight('Server:'),
             GestureDetector(
               onTap: () {
@@ -108,19 +106,21 @@ class HomePage extends HookWidget {
                       localIP.data != null
                           ? '${localIP.data}:${port.value}'
                           : '...',
-                      style:
-                          TextStyle(height: 1.5, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        height: 1.5,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   if (localIP.data != null)
-                    Icon(Ionicons.copy_outline, size: 16)
+                    const Icon(Ionicons.copy_outline, size: 16)
                 ],
               ),
             ),
-            SizedBox(height: 8),
-            Divider(),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
+            const Divider(),
+            const SizedBox(height: 8),
             Expanded(
               child: CustomScrollView(
                 slivers: [

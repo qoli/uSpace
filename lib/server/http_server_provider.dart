@@ -12,20 +12,20 @@ Future<String?> getLocalIpAddress(int port) async {
 
   try {
     // Try VPN connection first
-    NetworkInterface vpnInterface =
-    interfaces.firstWhere((element) => element.name == "tun0");
+    var vpnInterface =
+    interfaces.firstWhere((element) => element.name == 'tun0');
     return vpnInterface.addresses.first.address;
   } on StateError {
     // Try wlan connection next
     try {
-      NetworkInterface interface =
-      interfaces.firstWhere((element) => element.name == "wlan0");
+      var interface =
+      interfaces.firstWhere((element) => element.name == 'wlan0');
       return interface.addresses.first.address;
     } catch (ex) {
       // Try any other connection next
       try {
-        NetworkInterface interface = interfaces.firstWhere((element) =>
-        !(element.name == "tun0" || element.name == "wlan0"));
+        var interface = interfaces.firstWhere((element) =>
+        !(element.name == 'tun0' || element.name == 'wlan0'));
         return interface.addresses.first.address;
       } catch (ex) {
         return null;
@@ -44,7 +44,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
   HttpServer? server;
 
   Future<void> _initHttpServer() async {
-    bool foundFile = false;
+    var foundFile = false;
 
     try {
       server = await HttpServer.bind('0.0.0.0', port);
@@ -62,13 +62,13 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
       debugPrint('Request URI ... ${body.request.uri.toString()}');
       switch (body.request.uri.toString()) {
         case '/upload':
-          if (body.type != "form") {
+          if (body.type != 'form') {
             _http(body, 400);
             return;
           }
 
           for (var key in body.body.keys.toSet()) {
-            if (key == "file") {
+            if (key == 'file') {
               foundFile = true;
             }
           }
@@ -85,7 +85,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           debugPrint(data.content?.runtimeType.toString());
           // Save file
           final directory = await getApplicationDocumentsDirectory();
-          File fFile = File('${directory.path}/${data.filename}');
+          var fFile = File('${directory.path}/${data.filename}');
           debugPrint('${data.filename}');
 
           if (data.content.runtimeType == String) {
@@ -101,12 +101,12 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           onNew();
           break;
         case '/':
-          String _content = await rootBundle.loadString('assets/upload.html');
+          var _content = await rootBundle.loadString('assets/upload.html');
           body.request.response.statusCode = 200;
           body.request.response.headers
-              .set("Content-Type", "text/html; charset=utf-8");
+              .set('Content-Type', 'text/html; charset=utf-8');
           body.request.response.write(_content);
-          body.request.response.close();
+          await body.request.response.close();
           break;
 
         default:
@@ -115,7 +115,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
     });
   }
 
-  _http(HttpRequestBody body, int code) {
+  void _http(HttpRequestBody body, int code) {
     switch (code) {
       case 400:
         body.request.response.statusCode = 400;
@@ -128,7 +128,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
         break;
       case 201:
         body.request.response.statusCode = 201;
-        body.request.response.write("Upload DONE");
+        body.request.response.write('Upload DONE');
         body.request.response.close();
         break;
       default:

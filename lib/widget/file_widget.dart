@@ -27,9 +27,9 @@ class FileWidget extends HookWidget {
   Widget build(BuildContext context) {
     var colorTuple = useMemoized(() {
       final mimeType = lookupMimeType(file.path);
-      IconData icon = Ionicons.document_outline;
-      Color listColor = Theme.of(context).primaryIconTheme.color!;
-      Color bgColor = listColor.withAlpha(5);
+      var icon = Ionicons.document_outline;
+      var listColor = Theme.of(context).primaryIconTheme.color!;
+      var bgColor = listColor.withAlpha(5);
 
       if (mimeType != null) {
         if (mimeType.startsWith('image')) {
@@ -75,7 +75,7 @@ class FileWidget extends HookWidget {
       onTap: () {
         showModalBottomSheet(
           context: context,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
           ),
           builder: (ctx) => SafeArea(
@@ -100,18 +100,21 @@ class FileWidget extends HookWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(colorTuple.item1, color: colorTuple.item2, size: 16),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Container(
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
-                    file.path.replaceAll(directory.path + '/', ''),
-                    style: TextStyle(fontWeight: FontWeight.w500, height: 1),
+                    file.path.replaceAll('${directory.path}/', ''),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      height: 1,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 TextLight(size),
               ],
             ),

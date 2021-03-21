@@ -6,7 +6,7 @@ enum ServerStatus {
   error,
 }
 
-const ServerStatusStringMap = {
+const serverStatusStringMap = {
   ServerStatus.starting: 'Starting',
   ServerStatus.running: 'Running',
   ServerStatus.uploading: 'Uploading',
