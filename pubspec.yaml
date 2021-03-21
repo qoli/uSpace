@@ -1,0 +1,31 @@
+name: lanWebFiles
+description: A new Flutter project.
+
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  intl: ^0.16.1
+  cupertino_icons: ^1.0.0
+  http_server: ^0.9.8+1
+  path_provider: ^1.6.27
+  filesize: ^1.0.4
+  share: ^0.6.5+4
+  mime: ^0.9.7
+  ionicons: ^0.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/upload.html
