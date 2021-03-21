@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
+import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
@@ -160,29 +162,42 @@ class HomePage extends HookWidget {
             const Divider(),
             const SizedBox(height: 8),
             Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                      child: TextLight('Files (${state.data!.fileCount})')),
-                  if (state.data!.fileCount > 0)
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) => FileWidget(
-                          directory: state.data!.directory!,
-                          file: state.data!.files[index].file,
-                          isDir: state.data!.files[index].isDirectory,
-                          changed:state.data!.files[index].changed,
-                          onRemove: () {
-                            listRefreshKey.value = Object();
-                          },
+              child: Builder(builder: (context) {
+                Widget child;
+                if (state.data!.fileCount > 0)
+                  child = CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                          child: TextLight('Files (${state.data!.fileCount})')),
+                      SliverImplicitlyAnimatedList<FileState>(
+                        items: state.data!.files,
+                        itemBuilder: (context, animation, item, index) =>
+                            SizeFadeTransition(
+                          sizeFraction: 0.7,
+                          curve: Curves.easeInOut,
+                          animation: animation,
+                          child: FileWidget(
+                            directory: state.data!.directory!,
+                            file: item.file,
+                            isDir: item.isDirectory,
+                            changed: item.changed,
+                            onRemove: () {
+                              listRefreshKey.value = Object();
+                            },
+                          ),
                         ),
-                        childCount: state.data!.fileCount,
+                        areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
+                        spawnIsolate: true,
                       ),
-                    )
-                  else
-                    SliverToBoxAdapter(child: Empty()),
-                ],
-              ),
+                    ],
+                  );
+                else
+                  child = Empty();
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: child,
+                );
+              }),
             ),
           ],
         ),
