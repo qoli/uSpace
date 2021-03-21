@@ -96,7 +96,7 @@ class FileWidget extends HookWidget {
           showModalBottomSheet(
             context: context,
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
             ),
             builder: (ctx) => SafeArea(
                 child: FileAction(
