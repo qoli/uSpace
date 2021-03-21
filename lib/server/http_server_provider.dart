@@ -32,8 +32,6 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
   HttpServer? server;
 
   Future<void> _initHttpServer() async {
-    var foundFile = false;
-
     try {
       server = await HttpServer.bind('0.0.0.0', port);
     } catch (e) {
@@ -55,13 +53,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
             return;
           }
 
-          for (var key in body.body.keys.toSet()) {
-            if (key == 'file') {
-              foundFile = true;
-            }
-          }
-
-          if (!foundFile) {
+          if (!body.body.keys.contains('file')) {
             _http(body, 400);
             return;
           }
