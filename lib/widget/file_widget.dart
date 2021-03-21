@@ -94,32 +94,28 @@ class FileWidget extends HookWidget {
 
     var size = useMemoized(
       () {
-        if (!isDir) {
-          return filesize(lengthFuture.data);
-        } else {
-          return '';
-        }
+        if (isDir) return '';
+        return filesize(lengthFuture.data);
       },
       [lengthFuture.data, isDir],
     );
 
     return GestureDetector(
       onTap: () {
-        if (!isDir) {
-          showModalBottomSheet(
-            context: context,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-            ),
-            builder: (ctx) => SafeArea(
-                child: FileAction(
-              directory: directory,
-              file: file,
-              fileSize: size,
-              onRemove: onRemove,
-            )),
-          );
-        }
+        if (isDir) return;
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+          ),
+          builder: (ctx) => SafeArea(
+              child: FileAction(
+            directory: directory,
+            file: file,
+            fileSize: size,
+            onRemove: onRemove,
+          )),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -149,8 +145,7 @@ class FileWidget extends HookWidget {
                   ),
                 ),
                 const Spacer(),
-                if (!isDir) TextLight(size),
-                if (isDir) TextLight('Folder'),
+                if (isDir) TextLight('Folder') else TextLight(size),
               ],
             ),
           ),
