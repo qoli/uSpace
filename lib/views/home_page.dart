@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,9 +75,16 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(height: 8),
             if (filesListWidget != null) Divider(),
             SizedBox(height: 8),
-            if (filesListWidget != null) textLight('Files (${filesListWidget.length})'),
-            if (filesListWidget != null) ...filesListWidget,
-            if (filesListWidget != null && filesListWidget.length == 0) Text('No Files'),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  if (filesListWidget != null) textLight('Files (${filesListWidget.length})'),
+                  if (filesListWidget != null) ...filesListWidget,
+                  if (filesListWidget != null && filesListWidget.length == 0) Text('No Files'),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -93,27 +101,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _fileWidget(FileSystemEntity file, {@required Function callback}) {
     final mimeType = lookupMimeType(file.path);
-
-    Color listColor = Theme.of(context).primaryIconTheme.color;
-
     IconData icon = Ionicons.document_outline;
+    Color listColor = Theme.of(context).primaryIconTheme.color;
+    Color bgColor = listColor.withAlpha(5);
+
+    print(mimeType);
 
     if (mimeType != null) {
+      if (mimeType.startsWith('image')) {
+        icon = Ionicons.image_outline;
+        listColor = Colors.indigo;
+        bgColor = listColor.withAlpha(10);
+      }
       if (mimeType.startsWith('audio')) {
         icon = Ionicons.musical_note_outline;
         listColor = Colors.amber;
+        bgColor = listColor.withAlpha(10);
       }
       if (mimeType.startsWith('video')) {
         icon = Ionicons.play_outline;
         listColor = Colors.cyan;
+        bgColor = listColor.withAlpha(10);
       }
       if (mimeType.startsWith('text')) {
         icon = Ionicons.document_text_outline;
         listColor = Colors.green;
+        bgColor = listColor.withAlpha(10);
       }
       if (mimeType.startsWith('application')) {
         icon = Ionicons.code_outline;
         listColor = Colors.blue;
+        bgColor = listColor.withAlpha(10);
       }
     }
 
@@ -125,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: Container(
           decoration: BoxDecoration(
-            color: listColor.withAlpha(10),
+            color: bgColor,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Padding(
@@ -136,8 +154,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icon(icon, color: listColor, size: 16),
                 SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
-                  child: Text(file.path.replaceAll(directory.path + '/', ''), style: TextStyle(fontWeight: FontWeight.w400), maxLines: 1),
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
+                  child: Text(
+                    file.path.replaceAll(directory.path + '/', ''),
+                    style: TextStyle(fontWeight: FontWeight.w400),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Spacer(),
                 textLight(filesize(File(file.path).lengthSync())),
@@ -196,67 +219,144 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _fileAction(FileSystemEntity file) {
-    // Share.shareFiles([file.path]);
-
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
       ),
-      builder: (ctx) => _buttomSheet(ctx, file),
+      builder: (ctx) => SafeArea(child: _buttomSheet(ctx, file)),
     );
   }
 
   _buttomSheet(BuildContext context, FileSystemEntity file) {
     final stat = FileStat.statSync(file.path);
     final f = DateFormat('yyyy-MM-dd hh:mm');
+    final name = file.path.replaceAll(directory.path + '/', '');
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Container(
-        height: 200,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              file.path.replaceAll(directory.path + '/', ''),
-              style: TextStyle(fontWeight: FontWeight.bold),
-              maxLines: 1,
-            ),
-            Text(
-              filesize(File(file.path).lengthSync()),
-              style: TextStyle(fontWeight: FontWeight.w400, height: 1.5, fontSize: 12, color: Theme.of(context).textTheme.headline1.color),
-              maxLines: 1,
-            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _button('Share'),
-                _button('Delete'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 120,
+                      child: Text(
+                        name,
+                        style: TextStyle(fontWeight: FontWeight.bold, height: 1.5),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '${filesize(File(file.path).lengthSync())} ${f.format(stat.changed)}',
+                      style: TextStyle(fontWeight: FontWeight.w400, height: 1.5, fontSize: 12, color: Theme.of(context).textTheme.headline1.color),
+                    ),
+                  ],
+                ),
+                Spacer(),
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryIconTheme.color.withAlpha(10),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Ionicons.trash_outline),
+                      iconSize: 20,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _remove(file, name);
+                      },
+                    ),
+                  ),
+                )
               ],
-            )
+            ),
+
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: Padding(
+            //     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+            //     child: Container(
+            //       decoration: BoxDecoration(
+            //         color: Theme.of(context).primaryIconTheme.color.withAlpha(10),
+            //         borderRadius: BorderRadius.circular(8),
+            //       ),
+            //       padding: EdgeInsets.all(8),
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           Text(
+            //             'Changed Time',
+            //             style: TextStyle(
+            //               fontWeight: FontWeight.bold,
+            //               height: 1.5,
+            //             ),
+            //             maxLines: 1,
+            //             overflow: TextOverflow.ellipsis,
+            //           ),
+            //           Text(
+            //             f.format(stat.changed),
+            //             style: TextStyle(
+            //               fontWeight: FontWeight.w400,
+            //               height: 1.5,
+            //               color: Theme.of(context).textTheme.bodyText1.color.withAlpha(75),
+            //             ),
+            //             maxLines: 2,
+            //             overflow: TextOverflow.ellipsis,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ButtonTheme(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                child: RaisedButton(
+                  color: Colors.black,
+                  elevation: 0,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Share.shareFiles([file.path]);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Share",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _button(String text, {bool isMain = false}) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            )),
-        padding: EdgeInsets.all(16),
-        child: Text(
-          text,
-          style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
-          maxLines: 1,
-        ),
-      ),
-    );
+  _remove(FileSystemEntity file, String name) async {
+    final OkCancelResult result = await showOkCancelAlertDialog(context: context, title: 'Delete', message: name);
+    if (result == OkCancelResult.ok) {
+      file.deleteSync();
+      _getLocalFiles();
+    }
   }
 
   _getLocalFiles() async {

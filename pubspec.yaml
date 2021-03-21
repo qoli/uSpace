@@ -20,6 +20,7 @@ dependencies:
   share: ^0.6.5+4
   mime: ^0.9.7
   ionicons: ^0.1.1
+  adaptive_dialog: ^0.9.4
 
 dev_dependencies:
   flutter_test:

@@ -10,11 +10,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'FileStorage',
+      title: 'uSpace',
       theme: lightTheme, // Provide light theme.
       darkTheme: ThemeData.dark(), // Provide dark theme.
       themeMode: ThemeMode.system,
-      home: MyHomePage(title: 'File Storage'),
+      home: MyHomePage(title: 'uSpace'),
     );
   }
 
