@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
-import 'package:uSpace/utils/file_size.dart';
-import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/text_light.dart';
 
 import 'file_action.dart';
@@ -32,6 +30,7 @@ class FileWidget extends HookWidget {
     this.onRemove,
     this.isDir = false,
     required this.changed,
+    this.size = '',
   }) : super(key: key);
 
   final Directory directory;
@@ -39,6 +38,7 @@ class FileWidget extends HookWidget {
   final VoidCallback? onRemove;
   final bool isDir;
   final DateTime changed;
+  final String size;
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +83,7 @@ class FileWidget extends HookWidget {
       }
 
       return _State(icon, listColor, bgColor);
-    }, [file]);
-
-    var size = useMemoizedFuture(
-      () async {
-        if (isDir) return '';
-        return fileSize(await File(file.path).length());
-      },
-      '',
-      keys: [file, isDir],
-    );
+    }, [file.path]);
 
     return GestureDetector(
       onTap: () {
@@ -106,7 +97,7 @@ class FileWidget extends HookWidget {
               child: FileAction(
             directory: directory,
             file: file,
-            fileSize: size.data!,
+            fileSize: size!,
             changed: changed,
             onRemove: onRemove,
           )),
@@ -140,7 +131,7 @@ class FileWidget extends HookWidget {
                   ),
                 ),
                 const Spacer(),
-                if (isDir) const TextLight('Folder') else TextLight(size.data!),
+                if (isDir) const TextLight('Folder') else TextLight(size),
               ],
             ),
           ),

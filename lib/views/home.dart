@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/server/http_server_provider.dart';
 import 'package:uSpace/server/server_status.dart';
+import 'package:uSpace/utils/file_size.dart';
 import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/empty.dart';
 import 'package:uSpace/widget/file_widget.dart';
@@ -26,20 +27,22 @@ class _State {
   ]);
 
   final Directory? directory;
-  final List<FileState> files;
+  final List<_FileState> files;
   final int fileCount;
 }
 
-class FileState {
-  FileState(
+class _FileState {
+  const _FileState(
     this.file,
     this.isDirectory,
     this.changed,
+    this.size,
   );
 
   final FileSystemEntity file;
   final bool isDirectory;
   final DateTime changed;
+  final String size;
 }
 
 class HomePage extends StatelessWidget {
@@ -102,13 +105,12 @@ class _HomePage extends HookWidget {
       () async {
         final directory = await getApplicationDocumentsDirectory();
         var files = await directory.list().toList();
-        var list = await Future.wait(files.map(
-          (e) async => FileState(
-            e,
-            await FileSystemEntity.isDirectory(e.path),
-            (await FileStat.stat(e.path)).changed,
-          ),
-        ));
+        var list = await Future.wait(files.map((e) async => _FileState(
+              e,
+              await FileSystemEntity.isDirectory(e.path),
+              (await FileStat.stat(e.path)).changed,
+              fileSize(await File(e.path).length()),
+            )));
         list.sort((a, b) => b.changed.compareTo(a.changed));
 
         return _State(
@@ -180,8 +182,9 @@ class _HomePage extends HookWidget {
                 slivers: [
                   SliverToBoxAdapter(
                       child: TextLight('Files (${state.data!.fileCount})')),
-                  SliverImplicitlyAnimatedList<FileState>(
+                  SliverImplicitlyAnimatedList<_FileState>(
                     items: state.data!.files,
+                    areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
                     itemBuilder: (context, animation, item, index) =>
                         SizeFadeTransition(
                       sizeFraction: 0.7,
@@ -192,13 +195,12 @@ class _HomePage extends HookWidget {
                         file: item.file,
                         isDir: item.isDirectory,
                         changed: item.changed,
+                        size: item.size,
                         onRemove: () {
                           listRefreshKey.value = Object();
                         },
                       ),
                     ),
-                    areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
-                    spawnIsolate: true,
                   ),
                 ],
               );
