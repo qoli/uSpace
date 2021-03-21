@@ -394,12 +394,16 @@ class _MyHomePageState extends State<MyHomePage> {
     directory = await getApplicationDocumentsDirectory();
     files = directory.listSync(recursive: false).toList();
     filesListWidget = List.generate(files.length, (index) {
-      return _fileWidget(
-        files[index],
-        callback: () {
-          _fileAction(files[index]);
-        },
-      );
+      if (!FileSystemEntity.isDirectorySync(files[index].path)) {
+        return _fileWidget(
+          files[index],
+          callback: () {
+            _fileAction(files[index]);
+          },
+        );
+      } else {
+        return Container();
+      }
     });
 
     setState(() {});
