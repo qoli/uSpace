@@ -2,11 +2,11 @@ import 'dart:io';
 import 'dart:ui';
 
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
+import 'package:uSpace/utils/file_size.dart';
 import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/text_light.dart';
 
@@ -85,21 +85,13 @@ class FileWidget extends HookWidget {
       return _State(icon, listColor, bgColor);
     }, [file]);
 
-    var lengthFuture = useMemoizedFuture(
+    var size = useMemoizedFuture(
       () async {
-        if (isDir) return 0;
-        return await File(file.path).length();
-      },
-      0,
-      keys: [file, isDir],
-    );
-
-    var size = useMemoized(
-      () {
         if (isDir) return '';
-        return filesize(lengthFuture.data);
+        return fileSize(await File(file.path).length());
       },
-      [lengthFuture.data, isDir],
+      '',
+      keys: [file, isDir],
     );
 
     return GestureDetector(
@@ -114,8 +106,8 @@ class FileWidget extends HookWidget {
               child: FileAction(
             directory: directory,
             file: file,
-            fileSize: size,
-                changed:changed,
+            fileSize: size.data!,
+            changed: changed,
             onRemove: onRemove,
           )),
         );
@@ -148,7 +140,7 @@ class FileWidget extends HookWidget {
                   ),
                 ),
                 const Spacer(),
-                if (isDir) const TextLight('Folder') else TextLight(size),
+                if (isDir) const TextLight('Folder') else TextLight(size.data!),
               ],
             ),
           ),

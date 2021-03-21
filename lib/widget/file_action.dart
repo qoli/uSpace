@@ -39,58 +39,41 @@ class FileAction extends HookWidget {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 120,
-                      child: Text(
-                        name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          height: 1.5,
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 120,
+                          child: Text(
+                            name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              height: 1.5,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '$fileSize - $date',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        height: 1.5,
-                        fontSize: 12,
-                        color: Theme.of(context).textTheme.headline1!.color,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                SizedBox(
-                  height: 48,
-                  width: 48,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .primaryIconTheme
-                          .color!
-                          .withAlpha(10),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Ionicons.trash_outline),
-                      iconSize: 20,
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        // 確認刪除
-                        await file.delete();
-                        onRemove?.call();
-                      },
+                        const SizedBox(height: 4),
+                        Text(
+                          '$fileSize - $date',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            height: 1.5,
+                            fontSize: 12,
+                            color: Theme.of(context).textTheme.headline1!.color,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                )
+                ),
+                _DeleteButton(file: file, onRemove: onRemove)
               ],
             ),
             const SizedBox(height: 16),
@@ -123,6 +106,65 @@ class FileAction extends HookWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DeleteButton extends HookWidget {
+  const _DeleteButton({
+    Key? key,
+    required this.file,
+    required this.onRemove,
+  }) : super(key: key);
+
+  final FileSystemEntity file;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    var confirmDelete = useState(false);
+    var tickerProvider = useSingleTickerProvider();
+    return GestureDetector(
+      onTap: () async {
+        if (!confirmDelete.value) {
+          confirmDelete.value = true;
+          return;
+        }
+        Navigator.pop(context);
+        // 確認刪除
+        await file.delete();
+        onRemove?.call();
+      },
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 200),
+        vsync: tickerProvider,
+        child: AnimatedContainer(
+          decoration: BoxDecoration(
+            color: confirmDelete.value
+                ? Colors.red
+                : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          duration: const Duration(milliseconds: 300),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                const Icon(
+                  Ionicons.trash_outline,
+                  size: 20,
+                ),
+                if (confirmDelete.value)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 14),
+                    child:
+                        Text('Delete', style: TextStyle(color: Colors.white)),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
