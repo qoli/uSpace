@@ -33,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool serverEnable = false;
   late HttpServer server;
   List<FileSystemEntity> files = [];
-  int filesCount = 0;
   List<Widget>? filesListWidget;
   late Directory directory;
 
@@ -91,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  if (filesListWidget != null) textLight('Files ($filesCount)'),
+                  if (filesListWidget != null) textLight('Files (${files.length})'),
                   if (filesListWidget != null) ...filesListWidget!,
                   if (filesListWidget != null && files.length == 0) _noFiles(),
                 ],
@@ -136,8 +135,44 @@ class _MyHomePageState extends State<MyHomePage> {
     return Text(text, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
   }
 
-  Widget _folderWidget() {
-    return Container();
+  Widget _folderWidget(String filename) {
+    IconData icon = Ionicons.folder_outline;
+    Color listColor = Colors.pink;
+    Color bgColor = listColor.withAlpha(5);
+
+    return GestureDetector(
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+        child: Container(
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(icon, color: listColor, size: 16),
+                SizedBox(width: 8),
+                Container(
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
+                  child: Text(
+                    filename,
+                    style: TextStyle(fontWeight: FontWeight.w500, height: 1),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Spacer(),
+                textLight('Folder'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _fileWidget(FileSystemEntity file, {required VoidCallback callback}) {
@@ -397,23 +432,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _getLocalFiles() async {
-    filesCount = 0;
     directory = await getApplicationDocumentsDirectory();
     files = directory.listSync(recursive: false).toList();
     filesListWidget = List.generate(files.length, (index) {
+      final filename = files[index].path.replaceAll(directory.path + '/', '');
+
       if (!FileSystemEntity.isDirectorySync(files[index].path)) {
-        final filename = files[index].path.replaceAll(directory.path + '/', '');
-        if (!filename.startsWith('res_timestamp')) {
-          filesCount = filesCount + 1;
-          return _fileWidget(
-            files[index],
-            callback: () {
-              _fileAction(files[index]);
-            },
-          );
-        }
+        return _fileWidget(
+          files[index],
+          callback: () {
+            _fileAction(files[index]);
+          },
+        );
       }
-      return _folderWidget();
+      return _folderWidget(filename);
     });
 
     if (mounted) {
