@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         title: Text(
           widget.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
             textLight('Status:'),
             Text(
               serverText,
-              style: TextStyle(height: 1.5),
+              style: TextStyle(height: 1.5, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 16),
             textLight('Server:'),
@@ -89,11 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   if (filesListWidget != null) textLight('Files (${filesListWidget.length})'),
                   if (filesListWidget != null) ...filesListWidget,
-                  if (filesListWidget != null && filesListWidget.length == 0)
-                    Text(
-                      'No Files',
-                      style: TextStyle(height: 1.5),
-                    ),
+                  if (filesListWidget != null && filesListWidget.length == 0) _noFiles(),
                 ],
               ),
             ),
@@ -104,11 +100,36 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _copy() {
-    Share.share('http://$localIP:8020');
+    var url = 'http://$localIP:8020';
+    Clipboard.setData(ClipboardData(text: url));
+    Share.share(url);
+  }
+
+  Widget _noFiles() {
+    return Column(
+      children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 50, 0, 8),
+            child: SizedBox(
+              width: 96,
+              height: 96,
+              child: Image.asset('assets/empty.png'),
+            ),
+          ),
+        ),
+        Text(
+          'No Files',
+          style: TextStyle(height: 1.5, fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: 8),
+        textLight('Open web and upload your files.'),
+      ],
+    );
   }
 
   Widget textLight(String text) {
-    return Text(text, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w200));
+    return Text(text, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
   }
 
   Widget _fileWidget(FileSystemEntity file, {@required Function callback}) {
@@ -169,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
                     file.path.replaceAll(directory.path + '/', ''),
-                    style: TextStyle(fontWeight: FontWeight.w400),
+                    style: TextStyle(fontWeight: FontWeight.w500, height: 1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -196,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
             child: Text(
               title,
-              style: TextStyle(height: 1.5),
+              style: TextStyle(height: 1.5, fontWeight: FontWeight.w600),
             ),
           ),
           Spacer(),
@@ -268,7 +289,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '${filesize(File(file.path).lengthSync())} ${f.format(stat.changed)}',
+                      '${filesize(File(file.path).lengthSync())} - ${f.format(stat.changed)}',
                       style: TextStyle(fontWeight: FontWeight.w400, height: 1.5, fontSize: 12, color: Theme.of(context).textTheme.headline1.color),
                     ),
                   ],
