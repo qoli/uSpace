@@ -11,13 +11,13 @@ Future<String?> getLocalIpAddress(int port) async {
       type: InternetAddressType.IPv4, includeLinkLocal: true));
 
   // Try VPN connection first
-  var interface = (interfaces.firstWhere((element) => element?.name == 'tun0',
+  var interface = interfaces.firstWhere((element) => element?.name == 'tun0',
           orElse: () => null) ??
       // Try wlan connection next
       interfaces.firstWhere((element) => element?.name == 'wlan0',
           orElse: () => null) ??
       // Try any other connection next
-      interfaces.firstWhere((element) => true, orElse: () => null));
+      interfaces.firstWhere((element) => true, orElse: () => null);
 
   return interface?.addresses.first.address;
 }
