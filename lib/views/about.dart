@@ -38,16 +38,14 @@ class AboutPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: RaisedButton(
-                      color: Colors.black,
-                      elevation: 0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                        elevation: 0,
+                      ),
                       onPressed: () async {
                         const url = 'http://github.com/qoli/uSpace';
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
+                        if (await canLaunch(url)) await launch(url);
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),

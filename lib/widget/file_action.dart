@@ -106,9 +106,11 @@ class FileAction extends HookWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: RaisedButton(
-                  color: Colors.black,
-                  elevation: 0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                    elevation: 0,
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                     Share.shareFiles([file.path]);
