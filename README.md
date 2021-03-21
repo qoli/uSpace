@@ -1,16 +1,42 @@
 # uSpace
 
-A new Flutter project.
+A  Flutter project.
 
-## Getting Started
+一個簡單的局域網文件傳輸工具。
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Screens
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+![screen](https://gitee.com/qoli/u-pic/raw/master/uPic/screen.png)
+
+
+
+## Download
+
+Android Version: [Releases ](https://github.com/qoli/uSpace/releases)
+
+iOS Version: Soon...
+
+
+
+## Flutter SDK
+
+```bash
+$ fvm flutter --version
+Flutter 2.0.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 4d7946a68d (2 days ago) • 2021-03-18 17:24:33 -0700
+Engine • revision 3459eb2436
+Tools • Dart 2.12.2
+```
+
+
+
+## Build
+
+```bash
+flutter build apk --no-sound-null-safety
+```
+
