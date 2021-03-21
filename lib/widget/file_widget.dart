@@ -7,11 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
-import 'package:tuple/tuple.dart';
 import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/text_light.dart';
 
 import 'file_action.dart';
+
+class _State {
+  _State(
+    this.icon,
+    this.listColor,
+    this.bgColor,
+  );
+
+  final IconData icon;
+  final Color listColor;
+  final Color bgColor;
+}
 
 class FileWidget extends HookWidget {
   const FileWidget({
@@ -29,7 +40,7 @@ class FileWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorTuple = useMemoized(() {
+    var state = useMemoized(() {
       final mimeType = lookupMimeType(file.path);
       var icon = Ionicons.document_outline;
       var listColor = Theme.of(context).primaryIconTheme.color!;
@@ -69,7 +80,7 @@ class FileWidget extends HookWidget {
         bgColor = listColor.withAlpha(5);
       }
 
-      return Tuple3(icon, listColor, bgColor);
+      return _State(icon, listColor, bgColor);
     }, [file]);
 
     var lengthFuture = useMemoizedFuture(
@@ -114,7 +125,7 @@ class FileWidget extends HookWidget {
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: Container(
           decoration: BoxDecoration(
-            color: colorTuple.item3,
+            color: state.bgColor,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Padding(
@@ -122,7 +133,7 @@ class FileWidget extends HookWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(colorTuple.item1, color: colorTuple.item2, size: 16),
+                Icon(state.icon, color: state.listColor, size: 16),
                 const SizedBox(width: 8),
                 Container(
                   constraints: BoxConstraints(
