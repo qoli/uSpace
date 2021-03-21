@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -28,7 +30,7 @@ class HomePage extends HookWidget {
     var port = useState(8020);
     var listRefreshKey = useState(Object());
     var status = useValueListenable(useMemoized(
-          () => HttpServerProvider(port.value, () {
+      () => HttpServerProvider(port.value, () {
         listRefreshKey.value = Object();
       }),
       [port.value],
@@ -37,7 +39,14 @@ class HomePage extends HookWidget {
       useMemoized(
         () async {
           final directory = await getApplicationDocumentsDirectory();
-          final files = await directory.list().toList();
+          var files = await directory.list().toList();
+
+          var isDirectoryList = await Future.wait(
+              files.map((e) => FileSystemEntity.isDirectory(e.path)));
+          var asMap = isDirectoryList.asMap()
+            ..removeWhere((key, value) => value);
+          files = asMap.keys.map((e) => files[e]).toList();
+
           return Tuple2(directory, files);
         },
         [listRefreshKey.value],
