@@ -20,7 +20,7 @@ dependencies:
   mime: ^1.0.0
   ionicons: ^0.1.2
   adaptive_dialog: ^0.10.0+5
-  url_launcher: ^5.7.10
+  url_launcher: ^6.0.2
 
 dev_dependencies:
   flutter_test:
