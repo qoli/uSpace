@@ -72,7 +72,10 @@ class FileWidget extends HookWidget {
     }, [file]);
 
     var lengthFuture = useFuture(
-      useMemoized(() => File(file.path).length(), [file]),
+      useMemoized(() async {
+        if (await FileSystemEntity.isDirectory(file.path)) return 0;
+        return await File(file.path).length();
+      }, [file]),
       initialData: 0,
     );
 
