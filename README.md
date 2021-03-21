@@ -8,9 +8,9 @@ A  Flutter project.
 
 ## Screens
 
+![screen](https://gitee.com/qoli/u-pic/raw/master/uPic/screen.jpg)
 
 
-![screen](https://gitee.com/qoli/u-pic/raw/master/uPic/screen.png)
 
 
 
