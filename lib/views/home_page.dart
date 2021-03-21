@@ -12,10 +12,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/views/about.dart';
 
-enum ServerType { starting, running, uplopading, stoping, error }
+enum ServerType { starting, running, uploading, stopped, error }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
 
   final String title;
 
@@ -24,14 +27,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String localIP = '';
+  String? localIP;
   String serverText = '';
 
   bool serverEnable = false;
-  HttpServer server;
+  late HttpServer server;
   List<FileSystemEntity> files = [];
-  List<Widget> filesListWidget;
-  Directory directory;
+  List<Widget>? filesListWidget;
+  late Directory directory;
 
   @override
   void initState() {
@@ -61,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
               icon: Icon(Ionicons.help_outline),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AboutPage()));
               })
         ],
       ),
@@ -78,8 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 16),
             textLight('Server:'),
-            if (localIP != '') textLeftRight('$localIP:8020', callback: _copy),
-            if (localIP == '') Text('...'),
+            if (localIP != null)
+              textLeftRight('$localIP:8020', callback: _copy),
+            if (localIP == null) Text('...'),
             SizedBox(height: 8),
             Divider(),
             SizedBox(height: 8),
@@ -87,9 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  if (filesListWidget != null) textLight('Files (${filesListWidget.length})'),
-                  if (filesListWidget != null) ...filesListWidget,
-                  if (filesListWidget != null && filesListWidget.length == 0) _noFiles(),
+                  if (filesListWidget != null)
+                    textLight('Files (${filesListWidget!.length})'),
+                  if (filesListWidget != null) ...filesListWidget!,
+                  if (filesListWidget != null && filesListWidget!.length == 0) _noFiles(),
                 ],
               ),
             ),
@@ -129,13 +135,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget textLight(String text) {
-    return Text(text, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
+    return Text(text,
+        style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
   }
 
-  Widget _fileWidget(FileSystemEntity file, {@required Function callback}) {
+  Widget _fileWidget(FileSystemEntity file, {required VoidCallback callback}) {
     final mimeType = lookupMimeType(file.path);
     IconData icon = Ionicons.document_outline;
-    Color listColor = Theme.of(context).primaryIconTheme.color;
+    Color listColor = Theme.of(context).primaryIconTheme.color!;
     Color bgColor = listColor.withAlpha(5);
 
     if (mimeType != null) {
@@ -167,9 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return GestureDetector(
-      onTap: () {
-        callback?.call();
-      },
+      onTap: callback,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: Container(
@@ -185,7 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icon(icon, color: listColor, size: 16),
                 SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
                     file.path.replaceAll(directory.path + '/', ''),
                     style: TextStyle(fontWeight: FontWeight.w500, height: 1),
@@ -203,16 +209,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget textLeftRight(String title, {Function callback}) {
+  Widget textLeftRight(String title, {VoidCallback? callback}) {
     return GestureDetector(
       onTap: () {
         callback?.call();
       },
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
         children: [
           Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width - 140),
             child: Text(
               title,
               style: TextStyle(height: 1.5, fontWeight: FontWeight.w600),
@@ -234,10 +240,10 @@ class _MyHomePageState extends State<MyHomePage> {
         case ServerType.running:
           serverText = 'Running';
           break;
-        case ServerType.uplopading:
+        case ServerType.uploading:
           serverText = 'Uploading';
           break;
-        case ServerType.stoping:
+        case ServerType.stopped:
           serverText = 'Stoping';
           break;
         case ServerType.error:
@@ -280,7 +286,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: MediaQuery.of(context).size.width - 120,
                       child: Text(
                         name,
-                        style: TextStyle(fontWeight: FontWeight.bold, height: 1.5),
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, height: 1.5),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -288,7 +295,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     SizedBox(height: 4),
                     Text(
                       '${filesize(File(file.path).lengthSync())} - ${f.format(stat.changed)}',
-                      style: TextStyle(fontWeight: FontWeight.w400, height: 1.5, fontSize: 12, color: Theme.of(context).textTheme.headline1.color),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          height: 1.5,
+                          fontSize: 12,
+                          color: Theme.of(context).textTheme.headline1!.color),
                     ),
                   ],
                 ),
@@ -298,7 +309,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 48,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryIconTheme.color.withAlpha(10),
+                      color: Theme.of(context)
+                          .primaryIconTheme
+                          .color!
+                          .withAlpha(10),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
@@ -356,7 +370,8 @@ class _MyHomePageState extends State<MyHomePage> {
               width: double.infinity,
               height: 52,
               child: ButtonTheme(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
                 child: RaisedButton(
                   color: Colors.black,
                   elevation: 0,
@@ -383,7 +398,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _remove(FileSystemEntity file, String name) async {
-    final OkCancelResult result = await showOkCancelAlertDialog(context: context, title: 'Delete', message: name);
+    final OkCancelResult result = await showOkCancelAlertDialog(
+        context: context, title: 'Delete', message: name);
     if (result == OkCancelResult.ok) {
       file.deleteSync();
       _getLocalFiles();
@@ -405,22 +421,26 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  Future<String> _getLocalIpAddress() async {
-    final interfaces = await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true);
+  Future<String?> _getLocalIpAddress() async {
+    final interfaces = await NetworkInterface.list(
+        type: InternetAddressType.IPv4, includeLinkLocal: true);
 
     try {
       // Try VPN connection first
-      NetworkInterface vpnInterface = interfaces.firstWhere((element) => element.name == "tun0");
+      NetworkInterface vpnInterface =
+          interfaces.firstWhere((element) => element.name == "tun0");
       return vpnInterface.addresses.first.address;
     } on StateError {
       // Try wlan connection next
       try {
-        NetworkInterface interface = interfaces.firstWhere((element) => element.name == "wlan0");
+        NetworkInterface interface =
+            interfaces.firstWhere((element) => element.name == "wlan0");
         return interface.addresses.first.address;
       } catch (ex) {
         // Try any other connection next
         try {
-          NetworkInterface interface = interfaces.firstWhere((element) => !(element.name == "tun0" || element.name == "wlan0"));
+          NetworkInterface interface = interfaces.firstWhere((element) =>
+              !(element.name == "tun0" || element.name == "wlan0"));
           return interface.addresses.first.address;
         } catch (ex) {
           return null;
@@ -469,7 +489,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return;
           }
 
-          _statusText(ServerType.uplopading);
+          _statusText(ServerType.uploading);
           HttpBodyFileUpload data = body.body['file'];
           print(data.content.runtimeType);
           // Save file
@@ -490,7 +510,8 @@ class _MyHomePageState extends State<MyHomePage> {
         case '/':
           String _content = await rootBundle.loadString('assets/upload.html');
           body.request.response.statusCode = 200;
-          body.request.response.headers.set("Content-Type", "text/html; charset=utf-8");
+          body.request.response.headers
+              .set("Content-Type", "text/html; charset=utf-8");
           body.request.response.write(_content);
           body.request.response.close();
           break;
