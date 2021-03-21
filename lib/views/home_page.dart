@@ -138,8 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Color listColor = Theme.of(context).primaryIconTheme.color;
     Color bgColor = listColor.withAlpha(5);
 
-    print(mimeType);
-
     if (mimeType != null) {
       if (mimeType.startsWith('image')) {
         icon = Ionicons.image_outline;
@@ -437,8 +435,6 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       server = await HttpServer.bind('0.0.0.0', 8020);
     } catch (e) {
-      print(e);
-
       _statusText(ServerType.error);
       setState(() {
         serverEnable = false;
