@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   if (filesListWidget != null) textLight('Files ($filesCount)'),
                   if (filesListWidget != null) ...filesListWidget!,
-                  if (filesListWidget != null && filesCount == 0) _noFiles(),
+                  if (filesListWidget != null && files.length == 0) _noFiles(),
                 ],
               ),
             ),
@@ -134,6 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget textLight(String text) {
     return Text(text, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
+  }
+
+  Widget _folderWidget() {
+    return Container();
   }
 
   Widget _fileWidget(FileSystemEntity file, {required VoidCallback callback}) {
@@ -409,26 +413,25 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }
       }
-      return Container();
+      return _folderWidget();
     });
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<String?> _getLocalIpAddress() async {
     final interfaces = await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true);
 
     try {
-      // Try VPN connection first
       NetworkInterface vpnInterface = interfaces.firstWhere((element) => element.name == "tun0");
       return vpnInterface.addresses.first.address;
     } on StateError {
-      // Try wlan connection next
       try {
         NetworkInterface interface = interfaces.firstWhere((element) => element.name == "wlan0");
         return interface.addresses.first.address;
       } catch (ex) {
-        // Try any other connection next
         try {
           NetworkInterface interface = interfaces.firstWhere((element) => !(element.name == "tun0" || element.name == "wlan0"));
           return interface.addresses.first.address;
