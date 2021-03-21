@@ -73,13 +73,17 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           debugPrint(data.content?.runtimeType.toString());
           // Save file
           final directory = await getApplicationDocumentsDirectory();
-          var fFile = File('${directory.path}/${data.filename}');
+          var file = File('${directory.path}/${data.filename}');
+          var count = 1;
+          while (await file.exists()) {
+            file = File('${directory.path}/${count++}.${data.filename}');
+          }
           debugPrint('${data.filename}');
 
           if (data.content.runtimeType == String) {
-            await fFile.writeAsString(data.content, mode: FileMode.write);
+            await file.writeAsString(data.content, mode: FileMode.write);
           } else {
-            await fFile.writeAsBytes(data.content, mode: FileMode.write);
+            await file.writeAsBytes(data.content, mode: FileMode.write);
           }
 
           value = ServerStatus.running;
