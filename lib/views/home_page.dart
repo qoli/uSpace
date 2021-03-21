@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,7 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   if (filesListWidget != null) textLight('Files (${files.length})'),
                   if (filesListWidget != null) ...filesListWidget!,
-                  if (filesListWidget != null && files.length == 0) _noFiles(),
+                  if (filesListWidget != null && files.length == 0)
+                    _noFiles(),
                 ],
               ),
             ),
@@ -398,9 +398,11 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 52,
               child: ButtonTheme(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                child: RaisedButton(
-                  color: Colors.black,
-                  elevation: 0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                    elevation: 0,
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                     Share.shareFiles([file.path]);
@@ -424,11 +426,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _remove(FileSystemEntity file, String name) async {
-    final OkCancelResult result = await showOkCancelAlertDialog(context: context, title: 'Delete', message: name);
-    if (result == OkCancelResult.ok) {
-      file.deleteSync();
-      _getLocalFiles();
-    }
+    file.deleteSync();
+    _getLocalFiles();
   }
 
   _getLocalFiles() async {

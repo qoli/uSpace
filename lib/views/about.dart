@@ -15,7 +15,7 @@ class AboutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'About',
                 style: TextStyle(
                   fontSize: 36,
@@ -23,7 +23,7 @@ class AboutPage extends StatelessWidget {
                   height: 1,
                 ),
               ),
-              Text(
+              const Text(
                 'uSpace App',
                 style: TextStyle(
                   height: 1.5,
@@ -35,22 +35,22 @@ class AboutPage extends StatelessWidget {
                   width: double.infinity,
                   height: 52,
                   child: ButtonTheme(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    child: RaisedButton(
-                      color: Colors.black,
-                      elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                        elevation: 0,
+                      ),
                       onPressed: () async {
                         const url = 'http://github.com/qoli/uSpace';
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
+                        if (await canLaunch(url)) await launch(url);
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
-                          "Github Project",
+                          'Github Project',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -60,7 +60,7 @@ class AboutPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Text('❤️')
+              const Text('❤️')
             ],
           ),
         ),
