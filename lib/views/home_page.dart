@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool serverEnable = false;
   late HttpServer server;
   List<FileSystemEntity> files = [];
+  int filesCount = 0;
   List<Widget>? filesListWidget;
   late Directory directory;
 
@@ -64,8 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
               icon: Icon(Ionicons.help_outline),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AboutPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutPage()));
               })
         ],
       ),
@@ -82,8 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 16),
             textLight('Server:'),
-            if (localIP != null)
-              textLeftRight('$localIP:8020', callback: _copy),
+            if (localIP != null) textLeftRight('$localIP:8020', callback: _copy),
             if (localIP == null) Text('...'),
             SizedBox(height: 8),
             Divider(),
@@ -92,10 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  if (filesListWidget != null)
-                    textLight('Files (${filesListWidget!.length})'),
+                  if (filesListWidget != null) textLight('Files ($filesCount)'),
                   if (filesListWidget != null) ...filesListWidget!,
-                  if (filesListWidget != null && filesListWidget!.length == 0) _noFiles(),
+                  if (filesListWidget != null && filesCount == 0) _noFiles(),
                 ],
               ),
             ),
@@ -135,11 +133,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget textLight(String text) {
-    return Text(text,
-        style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
+    return Text(text, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300));
   }
 
   Widget _fileWidget(FileSystemEntity file, {required VoidCallback callback}) {
+    final filename = file.path.replaceAll(directory.path + '/', '');
     final mimeType = lookupMimeType(file.path);
     IconData icon = Ionicons.document_outline;
     Color listColor = Theme.of(context).primaryIconTheme.color!;
@@ -190,10 +188,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icon(icon, color: listColor, size: 16),
                 SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width - 150),
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
-                    file.path.replaceAll(directory.path + '/', ''),
+                    filename,
                     style: TextStyle(fontWeight: FontWeight.w500, height: 1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -217,8 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Row(
         children: [
           Container(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - 140),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
             child: Text(
               title,
               style: TextStyle(height: 1.5, fontWeight: FontWeight.w600),
@@ -286,8 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: MediaQuery.of(context).size.width - 120,
                       child: Text(
                         name,
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, height: 1.5),
+                        style: TextStyle(fontWeight: FontWeight.bold, height: 1.5),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -295,11 +290,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     SizedBox(height: 4),
                     Text(
                       '${filesize(File(file.path).lengthSync())} - ${f.format(stat.changed)}',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          height: 1.5,
-                          fontSize: 12,
-                          color: Theme.of(context).textTheme.headline1!.color),
+                      style: TextStyle(fontWeight: FontWeight.w400, height: 1.5, fontSize: 12, color: Theme.of(context).textTheme.headline1!.color),
                     ),
                   ],
                 ),
@@ -309,10 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 48,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .primaryIconTheme
-                          .color!
-                          .withAlpha(10),
+                      color: Theme.of(context).primaryIconTheme.color!.withAlpha(10),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
@@ -370,8 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
               width: double.infinity,
               height: 52,
               child: ButtonTheme(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 child: RaisedButton(
                   color: Colors.black,
                   elevation: 0,
@@ -398,8 +385,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _remove(FileSystemEntity file, String name) async {
-    final OkCancelResult result = await showOkCancelAlertDialog(
-        context: context, title: 'Delete', message: name);
+    final OkCancelResult result = await showOkCancelAlertDialog(context: context, title: 'Delete', message: name);
     if (result == OkCancelResult.ok) {
       file.deleteSync();
       _getLocalFiles();
@@ -407,44 +393,44 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _getLocalFiles() async {
+    filesCount = 0;
     directory = await getApplicationDocumentsDirectory();
     files = directory.listSync(recursive: false).toList();
     filesListWidget = List.generate(files.length, (index) {
       if (!FileSystemEntity.isDirectorySync(files[index].path)) {
-        return _fileWidget(
-          files[index],
-          callback: () {
-            _fileAction(files[index]);
-          },
-        );
-      } else {
-        return Container();
+        final filename = files[index].path.replaceAll(directory.path + '/', '');
+        if (!filename.startsWith('res_timestamp')) {
+          filesCount = filesCount + 1;
+          return _fileWidget(
+            files[index],
+            callback: () {
+              _fileAction(files[index]);
+            },
+          );
+        }
       }
+      return Container();
     });
 
     setState(() {});
   }
 
   Future<String?> _getLocalIpAddress() async {
-    final interfaces = await NetworkInterface.list(
-        type: InternetAddressType.IPv4, includeLinkLocal: true);
+    final interfaces = await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true);
 
     try {
       // Try VPN connection first
-      NetworkInterface vpnInterface =
-          interfaces.firstWhere((element) => element.name == "tun0");
+      NetworkInterface vpnInterface = interfaces.firstWhere((element) => element.name == "tun0");
       return vpnInterface.addresses.first.address;
     } on StateError {
       // Try wlan connection next
       try {
-        NetworkInterface interface =
-            interfaces.firstWhere((element) => element.name == "wlan0");
+        NetworkInterface interface = interfaces.firstWhere((element) => element.name == "wlan0");
         return interface.addresses.first.address;
       } catch (ex) {
         // Try any other connection next
         try {
-          NetworkInterface interface = interfaces.firstWhere((element) =>
-              !(element.name == "tun0" || element.name == "wlan0"));
+          NetworkInterface interface = interfaces.firstWhere((element) => !(element.name == "tun0" || element.name == "wlan0"));
           return interface.addresses.first.address;
         } catch (ex) {
           return null;
@@ -514,8 +500,7 @@ class _MyHomePageState extends State<MyHomePage> {
         case '/':
           String _content = await rootBundle.loadString('assets/upload.html');
           body.request.response.statusCode = 200;
-          body.request.response.headers
-              .set("Content-Type", "text/html; charset=utf-8");
+          body.request.response.headers.set("Content-Type", "text/html; charset=utf-8");
           body.request.response.write(_content);
           body.request.response.close();
           break;
