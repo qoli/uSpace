@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:share/share.dart';
+import 'package:uSpace/utils/hook.dart';
 
 class FileAction extends HookWidget {
   const FileAction({
@@ -28,12 +29,10 @@ class FileAction extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var date = useFuture(
-      useMemoized(
-        formatChanged,
-        [file],
-      ),
-      initialData: '',
+    var date = useMemoizedFuture(
+      formatChanged,
+      '',
+      keys: [file],
     );
     final name = file.path.replaceAll('${directory.path}/', '');
     return Padding(
@@ -79,7 +78,10 @@ class FileAction extends HookWidget {
                   width: 48,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryIconTheme.color!.withAlpha(10),
+                      color: Theme.of(context)
+                          .primaryIconTheme
+                          .color!
+                          .withAlpha(10),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(

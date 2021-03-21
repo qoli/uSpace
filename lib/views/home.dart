@@ -10,6 +10,7 @@ import 'package:share/share.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uSpace/server/http_server_provider.dart';
 import 'package:uSpace/server/server_status.dart';
+import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/empty.dart';
 import 'package:uSpace/widget/file_widget.dart';
 import 'package:uSpace/widget/text_light.dart';
@@ -26,31 +27,27 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var port = useState(8020);
-    var listRefreshKey = useState(Object());
-    var status = useValueListenable(useMemoized(
+    final port = useState(8020);
+    final listRefreshKey = useState(Object());
+    final status = useValueListenable(useMemoized(
       () => HttpServerProvider(port.value, () {
         listRefreshKey.value = Object();
       }),
       [port.value],
     ));
-    var filesTuple = useFuture(
-      useMemoized(
-        () async {
-          final directory = await getApplicationDocumentsDirectory();
-          var files = await directory.list().toList();
-          return Tuple2(directory, files);
-        },
-        [listRefreshKey.value],
-      ),
-      initialData: const Tuple2(null, null),
+    final filesTuple = useMemoizedFuture(
+      () async {
+        final directory = await getApplicationDocumentsDirectory();
+        var files = await directory.list().toList();
+        return Tuple2(directory, files);
+      },
+      const Tuple2(null, null),
+      keys: [listRefreshKey.value],
     );
-    var localIP = useFuture(
-      useMemoized(
-        () => getLocalIpAddress(port.value),
-        [port.value],
-      ),
-      initialData: null,
+    final localIP = useMemoizedFuture(
+      () => getLocalIpAddress(port.value),
+      null,
+      keys: [port.value],
     );
     var listCount = filesTuple.data?.item2?.length ?? 0;
     return Scaffold(
@@ -101,9 +98,12 @@ class HomePage extends HookWidget {
               child: Row(
                 children: [
                   Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width - 140),
                     child: Text(
-                      localIP.data != null ? '${localIP.data}:${port.value}' : '...',
+                      localIP.data != null
+                          ? '${localIP.data}:${port.value}'
+                          : '...',
                       style: const TextStyle(
                         height: 1.5,
                         fontWeight: FontWeight.w600,
@@ -111,7 +111,8 @@ class HomePage extends HookWidget {
                     ),
                   ),
                   const Spacer(),
-                  if (localIP.data != null) const Icon(Ionicons.copy_outline, size: 16)
+                  if (localIP.data != null)
+                    const Icon(Ionicons.copy_outline, size: 16)
                 ],
               ),
             ),
@@ -131,7 +132,8 @@ class HomePage extends HookWidget {
                           onRemove: () {
                             listRefreshKey.value = Object();
                           },
-                          isDir: FileSystemEntity.isDirectorySync(filesTuple.data!.item2![index].path),
+                          isDir: FileSystemEntity.isDirectorySync(
+                              filesTuple.data!.item2![index].path),
                         ),
                         childCount: listCount,
                       ),

@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
 import 'package:tuple/tuple.dart';
+import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/text_light.dart';
 
 import 'file_action.dart';
@@ -71,12 +72,13 @@ class FileWidget extends HookWidget {
       return Tuple3(icon, listColor, bgColor);
     }, [file]);
 
-    var lengthFuture = useFuture(
-      useMemoized(() async {
+    var lengthFuture = useMemoizedFuture(
+      () async {
         if (await FileSystemEntity.isDirectory(file.path)) return 0;
         return await File(file.path).length();
-      }, [file]),
-      initialData: 0,
+      },
+      0,
+      keys: [file],
     );
 
     var size = useMemoized(
@@ -123,7 +125,8 @@ class FileWidget extends HookWidget {
                 Icon(colorTuple.item1, color: colorTuple.item2, size: 16),
                 const SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
                     file.path.replaceAll('${directory.path}/', ''),
                     style: const TextStyle(
