@@ -30,7 +30,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(64, 32, 64, 64),
+                padding: const EdgeInsets.fromLTRB(64, 32, 64, 32),
                 child: SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -60,6 +60,7 @@ class AboutPage extends StatelessWidget {
                   ),
                 ),
               ),
+              Text('❤️')
             ],
           ),
         ),

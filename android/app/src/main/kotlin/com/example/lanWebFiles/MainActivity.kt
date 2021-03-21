@@ -1,4 +1,4 @@
-package com.example.uSpace
+package com.qoli.uSpace
 
 import io.flutter.embedding.android.FlutterActivity
 
