@@ -23,6 +23,7 @@ dependencies:
   flutter_hooks: ^0.16.0
   tuple: ^2.0.0
   very_good_analysis: ^2.0.0
+  flutter_dialogs: ^1.1.0
 
 dev_dependencies:
   flutter_test:

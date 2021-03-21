@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -99,12 +101,9 @@ class HomePage extends HookWidget {
               child: Row(
                 children: [
                   Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width - 140),
+                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
                     child: Text(
-                      localIP.data != null
-                          ? '${localIP.data}:${port.value}'
-                          : '...',
+                      localIP.data != null ? '${localIP.data}:${port.value}' : '...',
                       style: const TextStyle(
                         height: 1.5,
                         fontWeight: FontWeight.w600,
@@ -112,8 +111,7 @@ class HomePage extends HookWidget {
                     ),
                   ),
                   const Spacer(),
-                  if (localIP.data != null)
-                    const Icon(Ionicons.copy_outline, size: 16)
+                  if (localIP.data != null) const Icon(Ionicons.copy_outline, size: 16)
                 ],
               ),
             ),
@@ -133,6 +131,7 @@ class HomePage extends HookWidget {
                           onRemove: () {
                             listRefreshKey.value = Object();
                           },
+                          isDir: FileSystemEntity.isDirectorySync(filesTuple.data!.item2![index].path),
                         ),
                         childCount: listCount,
                       ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -17,11 +18,13 @@ class FileWidget extends HookWidget {
     required this.directory,
     required this.file,
     this.onRemove,
+    this.isDir = false,
   }) : super(key: key);
 
   final Directory directory;
   final FileSystemEntity file;
   final VoidCallback? onRemove;
+  final bool isDir;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +62,12 @@ class FileWidget extends HookWidget {
         }
       }
 
+      if (isDir) {
+        icon = Ionicons.folder_outline;
+        listColor = Colors.pink;
+        bgColor = listColor.withAlpha(5);
+      }
+
       return Tuple3(icon, listColor, bgColor);
     }, [file]);
 
@@ -68,24 +77,33 @@ class FileWidget extends HookWidget {
     );
 
     var size = useMemoized(
-      () => filesize(lengthFuture.data),
+      () {
+        if (!isDir) {
+          return filesize(lengthFuture.data);
+        } else {
+          return '';
+        }
+      },
       [lengthFuture.data],
     );
+
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-          ),
-          builder: (ctx) => SafeArea(
-              child: FileAction(
-            directory: directory,
-            file: file,
-            fileSize: size,
-            onRemove: onRemove,
-          )),
-        );
+        if (!isDir) {
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            ),
+            builder: (ctx) => SafeArea(
+                child: FileAction(
+              directory: directory,
+              file: file,
+              fileSize: size,
+              onRemove: onRemove,
+            )),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -102,8 +120,7 @@ class FileWidget extends HookWidget {
                 Icon(colorTuple.item1, color: colorTuple.item2, size: 16),
                 const SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width - 150),
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
                     file.path.replaceAll('${directory.path}/', ''),
                     style: const TextStyle(
@@ -115,7 +132,8 @@ class FileWidget extends HookWidget {
                   ),
                 ),
                 const Spacer(),
-                TextLight(size),
+                if (!isDir) TextLight(size),
+                if (isDir) TextLight('Folder'),
               ],
             ),
           ),

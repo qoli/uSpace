@@ -79,10 +79,7 @@ class FileAction extends HookWidget {
                   width: 48,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .primaryIconTheme
-                          .color!
-                          .withAlpha(10),
+                      color: Theme.of(context).primaryIconTheme.color!.withAlpha(10),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
@@ -90,8 +87,40 @@ class FileAction extends HookWidget {
                       iconSize: 20,
                       onPressed: () async {
                         Navigator.pop(context);
+                        // 確認刪除
                         await file.delete();
                         onRemove?.call();
+
+                        // showPlatformDialog(
+                        //   context: context,
+                        //   builder: (_) => BasicDialogAlert(
+                        //     title: const Text('Delete'),
+                        //     content: Text(name),
+                        //     actions: <Widget>[
+                        //       BasicDialogAction(
+                        //         title: Text(
+                        //           'Cancel',
+
+                        //           style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+                        //         ),
+                        //         onPressed: () {
+                        //           Navigator.pop(context);
+                        //         },
+                        //       ),
+                        //       BasicDialogAction(
+                        //         title: Text(
+                        //           'Delete',
+
+                        //           style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+                        //         ),
+                        //         onPressed: () async {
+                        //           Navigator.pop(context);
+
+                        //         },
+                        //       ),
+                        //     ],
+                        //   ),
+                        // );
                       },
                     ),
                   ),
