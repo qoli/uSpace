@@ -7,31 +7,19 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uSpace/server/server_status.dart';
 
 Future<String?> getLocalIpAddress(int port) async {
-  final interfaces = await NetworkInterface.list(
-      type: InternetAddressType.IPv4, includeLinkLocal: true);
+  final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(
+      type: InternetAddressType.IPv4, includeLinkLocal: true));
 
-  try {
-    // Try VPN connection first
-    var vpnInterface =
-    interfaces.firstWhere((element) => element.name == 'tun0');
-    return vpnInterface.addresses.first.address;
-  } on StateError {
-    // Try wlan connection next
-    try {
-      var interface =
-      interfaces.firstWhere((element) => element.name == 'wlan0');
-      return interface.addresses.first.address;
-    } catch (ex) {
+  // Try VPN connection first
+  var interface = (interfaces.firstWhere((element) => element?.name == 'tun0',
+          orElse: () => null) ??
+      // Try wlan connection next
+      interfaces.firstWhere((element) => element?.name == 'wlan0',
+          orElse: () => null) ??
       // Try any other connection next
-      try {
-        var interface = interfaces.firstWhere((element) =>
-        !(element.name == 'tun0' || element.name == 'wlan0'));
-        return interface.addresses.first.address;
-      } catch (ex) {
-        return null;
-      }
-    }
-  }
+      interfaces.firstWhere((element) => true, orElse: () => null));
+
+  return interface?.addresses.first.address;
 }
 
 class HttpServerProvider extends ValueNotifier<ServerStatus> {
