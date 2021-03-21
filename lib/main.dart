@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       // Provide dark theme.
       themeMode: ThemeMode.system,
-      home: HomePage(title: 'uSpace'),
+      home: const HomePage(title: 'uSpace'),
     );
   }
 

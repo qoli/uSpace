@@ -23,7 +23,7 @@ class Empty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          TextLight('Open web and upload your files.'),
+          const TextLight('Open web and upload your files.'),
         ],
       );
 }

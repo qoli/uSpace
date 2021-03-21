@@ -148,7 +148,7 @@ class FileWidget extends HookWidget {
                   ),
                 ),
                 const Spacer(),
-                if (isDir) TextLight('Folder') else TextLight(size),
+                if (isDir) const TextLight('Folder') else TextLight(size),
               ],
             ),
           ),

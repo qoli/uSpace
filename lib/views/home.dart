@@ -43,7 +43,7 @@ class FileState {
 }
 
 class HomePage extends HookWidget {
-  HomePage({
+  const HomePage({
     Key? key,
     required this.title,
   }) : super(key: key);
@@ -120,7 +120,7 @@ class HomePage extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            TextLight('Status:'),
+            const TextLight('Status:'),
             Text(
               serverStatusStringMap[status]!,
               style: const TextStyle(
@@ -129,7 +129,7 @@ class HomePage extends HookWidget {
               ),
             ),
             const SizedBox(height: 16),
-            TextLight('Server:'),
+            const TextLight('Server:'),
             GestureDetector(
               onTap: () {
                 if (localIP.data == null) return;
