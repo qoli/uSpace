@@ -105,12 +105,22 @@ class _HomePage extends HookWidget {
       () async {
         final directory = await getApplicationDocumentsDirectory();
         var files = await directory.list().toList();
-        var list = await Future.wait(files.map((e) async => _FileState(
+        var list = await Future.wait(files.map(
+          (e) async {
+            var sizeText = 'Folder';
+
+            if (!await FileSystemEntity.isDirectory(e.path)) {
+              sizeText = fileSize(await File(e.path).length());
+            }
+
+            return _FileState(
               e,
               await FileSystemEntity.isDirectory(e.path),
               (await FileStat.stat(e.path)).changed,
-              fileSize(await File(e.path).length()),
-            )));
+              sizeText,
+            );
+          },
+        ));
         list.sort((a, b) => b.changed.compareTo(a.changed));
 
         return _State(
@@ -153,12 +163,9 @@ class _HomePage extends HookWidget {
           child: Row(
             children: [
               Container(
-                constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width - 140),
+                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
                 child: Text(
-                  localIP.data != null
-                      ? '${localIP.data}:${port.value}'
-                      : '...',
+                  localIP.data != null ? '${localIP.data}:${port.value}' : '...',
                   style: const TextStyle(
                     height: 1.5,
                     fontWeight: FontWeight.w600,
@@ -166,8 +173,7 @@ class _HomePage extends HookWidget {
                 ),
               ),
               const Spacer(),
-              if (localIP.data != null)
-                const Icon(Ionicons.copy_outline, size: 16)
+              if (localIP.data != null) const Icon(Ionicons.copy_outline, size: 16)
             ],
           ),
         ),
@@ -180,13 +186,11 @@ class _HomePage extends HookWidget {
             if (state.data!.fileCount > 0)
               child = CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(
-                      child: TextLight('Files (${state.data!.fileCount})')),
+                  SliverToBoxAdapter(child: TextLight('Files (${state.data!.fileCount})')),
                   SliverImplicitlyAnimatedList<_FileState>(
                     items: state.data!.files,
                     areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
-                    itemBuilder: (context, animation, item, index) =>
-                        SizeFadeTransition(
+                    itemBuilder: (context, animation, item, index) => SizeFadeTransition(
                       sizeFraction: 0.7,
                       curve: Curves.easeInOut,
                       animation: animation,

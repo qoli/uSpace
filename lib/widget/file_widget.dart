@@ -28,9 +28,9 @@ class FileWidget extends HookWidget {
     required this.directory,
     required this.file,
     this.onRemove,
-    this.isDir = false,
     required this.changed,
     this.size = '',
+    this.isDir = false,
   }) : super(key: key);
 
   final Directory directory;
@@ -97,7 +97,7 @@ class FileWidget extends HookWidget {
               child: FileAction(
             directory: directory,
             file: file,
-            fileSize: size!,
+            fileSize: size,
             changed: changed,
             onRemove: onRemove,
           )),
@@ -118,8 +118,7 @@ class FileWidget extends HookWidget {
                 Icon(state.icon, color: state.listColor, size: 16),
                 const SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width - 150),
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
                     file.path.replaceAll('${directory.path}/', ''),
                     style: const TextStyle(
