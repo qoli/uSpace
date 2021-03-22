@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uSpace/class/files.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatelessWidget {
@@ -30,7 +31,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(64, 32, 64, 32),
+                padding: const EdgeInsets.fromLTRB(64, 8, 64, 4),
                 child: SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -60,11 +61,44 @@ class AboutPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text('❤️')
+              Padding(
+                padding: const EdgeInsets.fromLTRB(64, 4, 64, 8),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ButtonTheme(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        elevation: 0,
+                      ),
+                      onPressed: () => _removeAllFiles(context),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Remove All Files',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Text('❤️'),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _removeAllFiles(BuildContext context) async {
+    await Files().removeAllFiles();
+    Navigator.pop(context);
   }
 }

@@ -138,9 +138,7 @@ class _DeleteButton extends HookWidget {
       },
       child: AnimatedContainer(
         decoration: BoxDecoration(
-          color: confirmDelete.value
-              ? Colors.red
-              : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
+          color: confirmDelete.value ? Colors.red : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
           borderRadius: BorderRadius.circular(8),
         ),
         duration: const Duration(milliseconds: 300),
@@ -148,9 +146,10 @@ class _DeleteButton extends HookWidget {
           padding: const EdgeInsets.all(14),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Ionicons.trash_outline,
                 size: 20,
+                color: confirmDelete.value ? Colors.white : Theme.of(context).primaryIconTheme.color,
               ),
               AnimatedSize(
                 duration: const Duration(milliseconds: 200),
@@ -158,8 +157,7 @@ class _DeleteButton extends HookWidget {
                 child: confirmDelete.value
                     ? const Padding(
                         padding: EdgeInsets.only(left: 14),
-                        child: Text('Delete',
-                            style: TextStyle(color: Colors.white)),
+                        child: Text('Delete', style: TextStyle(color: Colors.white)),
                       )
                     : const SizedBox(),
               ),

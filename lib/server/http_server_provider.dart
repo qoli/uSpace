@@ -7,15 +7,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uSpace/server/server_status.dart';
 
 Future<String?> getLocalIpAddress(int port) async {
-  final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(
-      type: InternetAddressType.IPv4, includeLinkLocal: true));
+  final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true));
 
   // Try VPN connection first
-  var interface = interfaces.firstWhere((element) => element?.name == 'tun0',
-          orElse: () => null) ??
+  var interface = interfaces.firstWhere((element) => element?.name == 'tun0', orElse: () => null) ??
       // Try wlan connection next
-      interfaces.firstWhere((element) => element?.name == 'wlan0',
-          orElse: () => null) ??
+      interfaces.firstWhere((element) => element?.name == 'wlan0', orElse: () => null) ??
       // Try any other connection next
       interfaces.firstWhere((element) => true, orElse: () => null);
 
@@ -87,8 +84,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
         case '/':
           var _content = await rootBundle.loadString('assets/upload.html');
           body.request.response.statusCode = 200;
-          body.request.response.headers
-              .set('Content-Type', 'text/html; charset=utf-8');
+          body.request.response.headers.set('Content-Type', 'text/html; charset=utf-8');
           body.request.response.write(_content);
           await body.request.response.close();
           break;
