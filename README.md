@@ -10,7 +10,7 @@ A  Flutter project.
 
 ![screen](https://gitee.com/qoli/u-pic/raw/master/uPic/screen.jpg)
 
-[查看 App 的屏幕錄製視頻](https://gitee.com/qoli/u-pic/raw/master/uPic/Kapture 2021-03-23 at 04.51.51.mp4)
+[查看 App 的屏幕錄製視頻](https://gitee.com/qoli/u-pic/raw/master/uPic/uSpace_Build2.mp4)
 
 
 
