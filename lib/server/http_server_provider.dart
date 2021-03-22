@@ -29,6 +29,8 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
   HttpServer? server;
 
   Future<void> _initHttpServer() async {
+    final directory = await getApplicationDocumentsDirectory();
+
     try {
       server = await HttpServer.bind('0.0.0.0', port);
     } catch (e) {
@@ -37,8 +39,21 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
       return;
     }
 
+    try {
+      var serverVD = await HttpServer.bind('0.0.0.0', port + 1);
+      VirtualDirectory(directory.path)
+        ..jailRoot = false
+        ..followLinks = true
+        ..allowDirectoryListing = true
+        ..serve(serverVD);
+    } catch (e) {
+      print(e);
+    }
+
     value = ServerStatus.running;
     notifyListeners();
+
+    // vd
 
     debugPrint('Server running');
     server?.transform(HttpBodyHandler()).listen((HttpRequestBody body) async {
@@ -61,7 +76,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           HttpBodyFileUpload data = body.body['file'];
           debugPrint(data.content?.runtimeType.toString());
           // Save file
-          final directory = await getApplicationDocumentsDirectory();
+
           var file = File('${directory.path}/${data.filename}');
           var count = 1;
           while (await file.exists()) {
