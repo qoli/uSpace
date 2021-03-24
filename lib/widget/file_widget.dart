@@ -1,11 +1,11 @@
-import 'dart:io';
 import 'dart:ui';
 
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
+import 'package:provider/provider.dart';
+import 'package:uSpace/provider/file/file_provider.dart';
 import 'package:uSpace/widget/text_light.dart';
 
 import 'file_action.dart';
@@ -25,25 +25,17 @@ class _State {
 class FileWidget extends HookWidget {
   const FileWidget({
     Key? key,
-    required this.directory,
-    required this.file,
-    this.onRemove,
-    required this.changed,
-    this.size = '',
-    this.isDir = false,
+    required this.item,
   }) : super(key: key);
 
-  final Directory directory;
-  final FileSystemEntity file;
-  final VoidCallback? onRemove;
-  final bool isDir;
-  final DateTime changed;
-  final String size;
+  final FileItem item;
 
   @override
   Widget build(BuildContext context) {
+    var fileProvider = useContext().read<FileProvider>();
+
     var state = useMemoized(() {
-      final mimeType = lookupMimeType(file.path);
+      final mimeType = lookupMimeType(item.file.path);
       var icon = Ionicons.document_outline;
       var listColor = Theme.of(context).primaryIconTheme.color!;
       var bgColor = listColor.withAlpha(5);
@@ -76,31 +68,29 @@ class FileWidget extends HookWidget {
         }
       }
 
-      if (isDir) {
+      if (item.isDirectory) {
         icon = Ionicons.folder_outline;
         listColor = Colors.pink;
         bgColor = listColor.withAlpha(5);
       }
 
       return _State(icon, listColor, bgColor);
-    }, [file.path]);
+    }, [item.file.path]);
 
     return GestureDetector(
       onTap: () {
-        if (isDir) return;
+        if (item.isDirectory) return;
         showModalBottomSheet(
           context: context,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
           ),
-          builder: (ctx) => SafeArea(
-              child: FileAction(
-            directory: directory,
-            file: file,
-            fileSize: size,
-            changed: changed,
-            onRemove: onRemove,
-          )),
+          builder: (ctx) => Provider.value(
+            value: fileProvider,
+            child: SafeArea(
+              child: FileAction(item: item),
+            ),
+          ),
         );
       },
       child: Padding(
@@ -118,9 +108,10 @@ class FileWidget extends HookWidget {
                 Icon(state.icon, color: state.listColor, size: 16),
                 const SizedBox(width: 8),
                 Container(
-                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width - 150),
                   child: Text(
-                    file.path.replaceAll('${directory.path}/', ''),
+                    item.shortPath,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       height: 1,
@@ -130,7 +121,8 @@ class FileWidget extends HookWidget {
                   ),
                 ),
                 const Spacer(),
-                if (isDir) const TextLight('Folder') else TextLight(size),
+                // maybe display 'Folder'
+                TextLight(item.size),
               ],
             ),
           ),

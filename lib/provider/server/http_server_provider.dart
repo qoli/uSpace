@@ -4,17 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http_server/http_server.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uSpace/server/server_status.dart';
+import 'package:uSpace/provider/server/server_status.dart';
 
 Future<String?> getLocalIpAddress(int port) async {
-  final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true));
+  final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(
+      type: InternetAddressType.IPv4, includeLinkLocal: true));
 
-  // Try VPN connection first
-  var interface = interfaces.firstWhere((element) => element?.name == 'tun0', orElse: () => null) ??
+  var interface =
       // Try wlan connection next
-      interfaces.firstWhere((element) => element?.name == 'wlan0', orElse: () => null) ??
-      // Try any other connection next
-      interfaces.firstWhere((element) => true, orElse: () => null);
+      interfaces.firstWhere((element) => element?.name == 'wlan0',
+              orElse: () => null) ??
+          // Try VPN connection first
+          interfaces.firstWhere((element) => element?.name == 'tun0',
+              orElse: () => null) ??
+          // Try any other connection next
+          interfaces.firstWhere((element) => true, orElse: () => null);
 
   return interface?.addresses.first.address;
 }
@@ -25,7 +29,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
   }
 
   final int port;
-  final VoidCallback onNew;
+  final void Function() onNew;
   HttpServer? server;
 
   Future<void> _initHttpServer() async {
@@ -84,22 +88,32 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           }
           debugPrint('${data.filename}');
 
-          if (data.content.runtimeType == String) {
-            await file.writeAsString(data.content, mode: FileMode.write);
-          } else {
-            await file.writeAsBytes(data.content, mode: FileMode.write);
+          try {
+            if (data.content.runtimeType == String) {
+              await file.writeAsString(data.content, mode: FileMode.write);
+            } else {
+              await file.writeAsBytes(data.content, mode: FileMode.write);
+            }
+
+            value = ServerStatus.running;
+            notifyListeners();
+
+            _http(body, 201);
+
+            onNew();
+          } catch (e) {
+            await file.delete();
+            value = ServerStatus.error;
+            notifyListeners();
+            _http(body, 400);
           }
-
-          value = ServerStatus.running;
-          notifyListeners();
-
-          _http(body, 201);
-          onNew();
           break;
+
         case '/':
           var _content = await rootBundle.loadString('assets/upload.html');
           body.request.response.statusCode = 200;
-          body.request.response.headers.set('Content-Type', 'text/html; charset=utf-8');
+          body.request.response.headers
+              .set('Content-Type', 'text/html; charset=utf-8');
           body.request.response.write(_content);
           await body.request.response.close();
           break;

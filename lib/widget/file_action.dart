@@ -5,31 +5,26 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+import 'package:uSpace/provider/file/file_provider.dart';
 
 class FileAction extends HookWidget {
   const FileAction({
     Key? key,
-    required this.directory,
-    required this.file,
-    required this.fileSize,
-    required this.changed,
-    this.onRemove,
+    required this.item,
   }) : super(key: key);
 
-  final Directory directory;
-  final FileSystemEntity file;
-  final String fileSize;
-  final DateTime changed;
-  final VoidCallback? onRemove;
+  final FileItem item;
 
   @override
   Widget build(BuildContext context) {
+    var fileProvider = useContext().read<FileProvider>();
+
     final date = useMemoized(
-      () => DateFormat('yyyy-MM-dd hh:mm').format(changed),
-      [changed],
+      () => DateFormat('yyyy-MM-dd hh:mm').format(item.changed),
+      [item.changed],
     );
-    final name = file.path.replaceAll('${directory.path}/', '');
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Container(
@@ -50,7 +45,7 @@ class FileAction extends HookWidget {
                         SizedBox(
                           width: MediaQuery.of(context).size.width - 120,
                           child: Text(
-                            name,
+                            item.shortPath,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               height: 1.5,
@@ -61,7 +56,7 @@ class FileAction extends HookWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '$fileSize - $date',
+                          '${item.size} - $date',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             height: 1.5,
@@ -73,7 +68,10 @@ class FileAction extends HookWidget {
                     ),
                   ),
                 ),
-                _DeleteButton(file: file, onRemove: onRemove)
+                _DeleteButton(
+                  file: item.file,
+                  onRemove: () => fileProvider.refresh(),
+                )
               ],
             ),
             const SizedBox(height: 16),
@@ -91,7 +89,7 @@ class FileAction extends HookWidget {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    Share.shareFiles([file.path]);
+                    Share.shareFiles([item.file.path]);
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(8.0),
@@ -138,7 +136,9 @@ class _DeleteButton extends HookWidget {
       },
       child: AnimatedContainer(
         decoration: BoxDecoration(
-          color: confirmDelete.value ? Colors.red : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
+          color: confirmDelete.value
+              ? Colors.red
+              : Theme.of(context).primaryIconTheme.color!.withAlpha(10),
           borderRadius: BorderRadius.circular(8),
         ),
         duration: const Duration(milliseconds: 300),
@@ -149,7 +149,9 @@ class _DeleteButton extends HookWidget {
               Icon(
                 Ionicons.trash_outline,
                 size: 20,
-                color: confirmDelete.value ? Colors.white : Theme.of(context).primaryIconTheme.color,
+                color: confirmDelete.value
+                    ? Colors.white
+                    : Theme.of(context).primaryIconTheme.color,
               ),
               AnimatedSize(
                 duration: const Duration(milliseconds: 200),
@@ -157,7 +159,8 @@ class _DeleteButton extends HookWidget {
                 child: confirmDelete.value
                     ? const Padding(
                         padding: EdgeInsets.only(left: 14),
-                        child: Text('Delete', style: TextStyle(color: Colors.white)),
+                        child: Text('Delete',
+                            style: TextStyle(color: Colors.white)),
                       )
                     : const SizedBox(),
               ),
