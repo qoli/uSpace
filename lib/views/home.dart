@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -75,10 +76,14 @@ class _HomePage extends HookWidget {
 
     final fileState = useValueListenable(fileProvider);
 
+    var connectivityResultStream = useStream(
+      useMemoized(() => Connectivity().onConnectivityChanged),
+      initialData: null,
+    );
     final localIP = useMemoizedFuture(
       () => getLocalIpAddress(port.value),
       null,
-      keys: [port.value],
+      keys: [port.value, connectivityResultStream],
     );
 
     return Provider.value(

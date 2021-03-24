@@ -23,6 +23,7 @@ dependencies:
   very_good_analysis: ^2.0.0
   implicitly_animated_reorderable_list: ^0.4.0-dev+4
   provider: ^5.0.0
+  connectivity: ^3.0.3
 
 dev_dependencies:
   flutter_test:
