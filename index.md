@@ -1,37 +1,42 @@
-## Welcome to GitHub Pages
+# uSpace
 
-You can use the [editor on GitHub](https://github.com/qoli/uSpace/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+A  Flutter project.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+一個簡單的局域網文件傳輸工具。
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+## Screens
 
-# Header 1
-## Header 2
-### Header 3
+![screen](https://gitee.com/qoli/u-pic/raw/master/uPic/screen.jpg)
 
-- Bulleted
-- List
+[查看 App 的屏幕錄製視頻](https://gitee.com/qoli/u-pic/raw/master/uPic/uSpace_Build2.mp4)
 
-1. Numbered
-2. List
 
-**Bold** and _Italic_ and `Code` text
 
-[Link](url) and ![Image](src)
+## Download
+
+Android Version: [Releases ](https://github.com/qoli/uSpace/releases)
+
+iOS Version: Soon...
+
+
+
+## Flutter SDK
+
+```bash
+$ fvm flutter --version
+Flutter 2.0.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 4d7946a68d (2 days ago) • 2021-03-18 17:24:33 -0700
+Engine • revision 3459eb2436
+Tools • Dart 2.12.2
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/qoli/uSpace/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Build
 
-### Support or Contact
+```bash
+flutter build apk --no-sound-null-safety
+```
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
