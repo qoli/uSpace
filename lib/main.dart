@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uSpace/views/home.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://6c2ad9cb95f9412d837cc799aca8786e@o332403.ingest.sentry.io/5693358';
+    },
+    appRunner: () => runApp(MyApp()),
+  );
   runApp(MyApp());
 }
 
@@ -17,9 +26,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'uSpace',
       theme: lightTheme,
-      // Provide light theme.
       darkTheme: ThemeData.dark(),
-      // Provide dark theme.
       themeMode: ThemeMode.system,
       home: const HomePage(title: 'uSpace'),
     );
