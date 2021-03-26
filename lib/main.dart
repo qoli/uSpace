@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uSpace/views/home.dart';
@@ -9,6 +10,9 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));
+
+  // tmp
+  Provider.debugCheckInvalidValueType = null;
 
   await SentryFlutter.init(
     (options) {
