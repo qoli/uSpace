@@ -86,90 +86,87 @@ class _HomePage extends HookWidget {
       keys: [port.value, connectivityResultStream],
     );
 
-    return Provider.value(
-      value: fileProvider,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          const TextLight('Status:'),
-          Text(
-            serverStatusStringMap[status]!,
-            style: const TextStyle(
-              height: 1.5,
-              fontWeight: FontWeight.w600,
+    return ListenableProvider<FileProvider>(
+      create: (context) => FileProvider(),
+      builder: (context, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            const TextLight('Status:'),
+            Text(
+              serverStatusStringMap[status]!,
+              style: const TextStyle(
+                height: 1.5,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const TextLight('Server:'),
-          GestureDetector(
-            onTap: () {
-              if (localIP.data == null) return;
-              var url = 'http://${localIP.data}:${port.value}';
-              Clipboard.setData(ClipboardData(text: url));
-              Share.share(url);
-            },
-            child: Row(
-              children: [
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width - 140),
-                  child: Text(
-                    localIP.data != null
-                        ? '${localIP.data}:${port.value}'
-                        : '...',
-                    style: const TextStyle(
-                      height: 1.5,
-                      fontWeight: FontWeight.w600,
+            const SizedBox(height: 16),
+            const TextLight('Server:'),
+            GestureDetector(
+              onTap: () {
+                if (localIP.data == null) return;
+                var url = 'http://${localIP.data}:${port.value}';
+                Clipboard.setData(ClipboardData(text: url));
+                Share.share(url);
+              },
+              child: Row(
+                children: [
+                  Container(
+                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                    child: Text(
+                      localIP.data != null ? '${localIP.data}:${port.value}' : '...',
+                      style: const TextStyle(
+                        height: 1.5,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                const Spacer(),
-                if (localIP.data != null)
-                  const Icon(Ionicons.copy_outline, size: 16)
-              ],
+                  const Spacer(),
+                  if (localIP.data != null) const Icon(Ionicons.copy_outline, size: 16)
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Divider(),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Builder(builder: (context) {
-              Widget child;
-              if (fileState.fileCount > 0)
-                child = CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                        child: TextLight('Files (${fileState.fileCount})')),
-                    SliverImplicitlyAnimatedList<FileItem>(
-                      items: fileState.files,
-                      areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
-                      itemBuilder: (
-                        BuildContext context,
-                        Animation<double> animation,
-                        FileItem item,
-                        _,
-                      ) =>
-                          SizeFadeTransition(
-                        sizeFraction: 0.7,
-                        curve: Curves.easeInOut,
-                        animation: animation,
-                        child: FileWidget(item: item),
+            const SizedBox(height: 8),
+            const Divider(),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Builder(builder: (context) {
+                Widget child;
+                if (fileState.fileCount > 0)
+                  child = CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(child: TextLight('Files (${fileState.fileCount})')),
+                      SliverImplicitlyAnimatedList<FileItem>(
+                        items: fileState.files,
+                        areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
+                        itemBuilder: (
+                          BuildContext context,
+                          Animation<double> animation,
+                          FileItem item,
+                          _,
+                        ) =>
+                            SizeFadeTransition(
+                          sizeFraction: 0.7,
+                          curve: Curves.easeInOut,
+                          animation: animation,
+                          child: FileWidget(item: item),
+                        ),
+                        spawnIsolate: true,
                       ),
-                      spawnIsolate: true,
-                    ),
-                  ],
+                    ],
+                  );
+                else
+                  child = Empty();
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: child,
                 );
-              else
-                child = Empty();
-              return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: child,
-              );
-            }),
-          ),
-        ],
-      ),
+              }),
+            ),
+          ],
+        );
+      },
     );
   }
 }
