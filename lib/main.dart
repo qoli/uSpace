@@ -11,9 +11,6 @@ Future<void> main() async {
     statusBarColor: Colors.transparent, // transparent status bar
   ));
 
-  // tmp
-  Provider.debugCheckInvalidValueType = null;
-
   await SentryFlutter.init(
     (options) => options
       ..dsn = 'https://6c2ad9cb95f9412d837cc799aca8786e@o332403.ingest.sentry.io/5693358'

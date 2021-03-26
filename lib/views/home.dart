@@ -86,7 +86,7 @@ class _HomePage extends HookWidget {
       keys: [port.value, connectivityResultStream],
     );
 
-    return Provider.value(
+    return ChangeNotifierProvider.value(
       value: fileProvider,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
