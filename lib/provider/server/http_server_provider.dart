@@ -9,13 +9,9 @@ import 'package:uSpace/provider/server/server_status.dart';
 Future<String?> getLocalIpAddress(int port) async {
   final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true));
 
-  var interface =
-      // Try wlan connection next
-      interfaces.firstWhere((element) => element?.name == 'wlan0', orElse: () => null) ??
-          // Try VPN connection first
-          interfaces.firstWhere((element) => element?.name == 'tun0', orElse: () => null) ??
-          // Try any other connection next
-          interfaces.firstWhere((element) => true, orElse: () => null);
+  var interface = interfaces.firstWhere((element) => element?.name == 'wlan0', orElse: () => null) ??
+      interfaces.firstWhere((element) => element?.name == 'tun0', orElse: () => null) ??
+      interfaces.firstWhere((element) => true, orElse: () => null);
 
   return interface?.addresses.first.address;
 }
