@@ -14,7 +14,9 @@ A Flutter project.
 
 Android Version: [Releases ](https://github.com/qoli/uSpace/releases)
 
-iOS Version: Soon...
+iOS Version: https://apps.apple.com/us/app/uspace/id1559410346 
+
+
 
 ## Flutter SDK
 
@@ -25,6 +27,8 @@ Framework • revision 4d7946a68d (2 days ago) • 2021-03-18 17:24:33 -0700
 Engine • revision 3459eb2436
 Tools • Dart 2.12.2
 ```
+
+
 
 ## Build
 
