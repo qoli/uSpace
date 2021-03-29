@@ -85,7 +85,7 @@ class FileWidget extends HookWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
           ),
-          builder: (ctx) => Provider.value(
+          builder: (ctx) => ChangeNotifierProvider.value(
             value: fileProvider,
             child: SafeArea(
               child: FileAction(item: item),
