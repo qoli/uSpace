@@ -16,7 +16,7 @@ Future<void> main() async {
       ..debug = false,
     appRunner: () => runApp(MyApp()),
   );
-  runApp(MyApp());
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
