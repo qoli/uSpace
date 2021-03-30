@@ -99,6 +99,6 @@ class AboutPage extends StatelessWidget {
 
   void _removeAllFiles(BuildContext context) async {
     await Files().removeAllFiles();
-    Navigator.pop(context);
+    Navigator.pop(context, 'refresh');
   }
 }

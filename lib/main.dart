@@ -6,9 +6,10 @@ import 'package:uSpace/views/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // transparent status bar
-  ));
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
 
   await SentryFlutter.init(
     (options) => options
@@ -16,7 +17,6 @@ Future<void> main() async {
       ..debug = false,
     appRunner: () => runApp(MyApp()),
   );
-  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: const HomePage(title: 'uSpace'),
+      home: const HomePage(),
     );
   }
 
