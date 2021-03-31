@@ -20,6 +20,6 @@ platform :ios do
   lane :beta do
     
     build_app(workspace: "Runner.xcworkspace", scheme: "Runner",xcargs: "-allowProvisioningUpdates")
-    upload_to_testflight
+    upload_to_testflight(groups: "Open Beta")
   end
 end
