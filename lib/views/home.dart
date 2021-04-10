@@ -142,7 +142,7 @@ class _HomePage extends HookWidget {
                         SliverToBoxAdapter(child: TextLight('Files (${fileState.fileCount})')),
                         SliverImplicitlyAnimatedList<FileItem>(
                           items: fileState.files,
-                          areItemsTheSame: (a, b) => a?.file.path == b?.file.path,
+                          areItemsTheSame: (a, b) => a.file.path == b.file.path,
                           itemBuilder: (
                             BuildContext context,
                             Animation<double> animation,

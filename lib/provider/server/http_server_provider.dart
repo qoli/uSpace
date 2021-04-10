@@ -4,16 +4,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http_server/http_server.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uSpace/provider/server/server_status.dart';
 
 Future<String?> getLocalIpAddress(int port) async {
+  String? ipAddress;
+
   final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true));
+  await Sentry.captureMessage(interfaces.toString());
 
-  var interface = interfaces.firstWhere((element) => element?.name == 'wlan0', orElse: () => null) ??
-      interfaces.firstWhere((element) => element?.name == 'tun0', orElse: () => null) ??
-      interfaces.firstWhere((element) => true, orElse: () => null);
+  for (var interface in interfaces) {
+    switch (interface?.name) {
+      case 'en0':
+      case 'wlan0':
+        ipAddress = interface?.addresses.first.address;
+        break;
 
-  return interface?.addresses.first.address;
+      default:
+    }
+  }
+
+  return ipAddress;
 }
 
 class HttpServerProvider extends ValueNotifier<ServerStatus> {
