@@ -24,19 +24,8 @@ import 'package:rxdart/rxdart.dart';
 
 import 'about.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends HookWidget {
   const HomePage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const _HomePage();
-  }
-}
-
-class _HomePage extends HookWidget {
-  const _HomePage({
     Key? key,
   }) : super(key: key);
 
@@ -51,8 +40,8 @@ class _HomePage extends HookWidget {
 
     final state = useValueListenable(httpServerProvider);
 
-
-    final watchEventStreamController = context.read<StreamController<WatchEvent>>();
+    final watchEventStreamController =
+        context.read<StreamController<WatchEvent>>();
     final watchEvent = useStream(
       useMemoizedFuture(
         () async => Rx.merge([
@@ -82,14 +71,15 @@ class _HomePage extends HookWidget {
       keys: [watchEvent?.type, watchEvent?.path, ...state.uploadingFilePathSet],
     ).data;
 
-    final connectivityResultStream = useStream(
+    final connectivityResult = useStream(
       useMemoized(() => Connectivity().onConnectivityChanged),
       initialData: null,
     ).data;
+
     final localIP = useMemoizedFuture(
       () => getLocalIpAddress(port.value),
       null,
-      keys: [port.value, connectivityResultStream],
+      keys: [port.value, connectivityResult],
     );
 
     return Provider.value(
