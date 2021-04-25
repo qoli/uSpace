@@ -21,7 +21,7 @@ enum ServerStatus {
 class ServerState with EquatableMixin {
   ServerState({
     required this.serverStatus,
-    this.uploadingFilePathSet = const {},
+    required this.uploadingFilePathSet,
   });
 
   ServerStatus serverStatus;
@@ -39,7 +39,10 @@ class ServerState with EquatableMixin {
 
 class HttpServerProvider extends ValueNotifier<ServerState> {
   HttpServerProvider(this.port)
-      : super(ServerState(serverStatus: ServerStatus.starting)) {
+      : super(ServerState(
+          serverStatus: ServerStatus.starting,
+          uploadingFilePathSet: {},
+        )) {
     _initHttpServer();
   }
 

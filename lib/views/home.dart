@@ -41,6 +41,13 @@ class _HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final port = useState(8020);
 
+    final httpServerProvider = useChangeNotifier(
+      () => HttpServerProvider(port.value),
+      [port.value],
+    );
+
+    final state = useValueListenable(httpServerProvider);
+
     final watchEvent = useStream(
       useMemoizedFuture(
         () async =>
@@ -65,15 +72,8 @@ class _HomePage extends HookWidget {
         );
       },
       null,
-      keys: [watchEvent],
+      keys: [watchEvent, ...state.uploadingFilePathSet],
     ).data;
-
-    final httpServerProvider = useChangeNotifier(
-      () => HttpServerProvider(port.value),
-      [port.value],
-    );
-
-    final state = useValueListenable(httpServerProvider);
 
     final connectivityResultStream = useStream(
       useMemoized(() => Connectivity().onConnectivityChanged),
