@@ -14,13 +14,16 @@ Future<void> main() async {
 
   await SentryFlutter.init(
     (options) => options
-      ..dsn = 'https://6c2ad9cb95f9412d837cc799aca8786e@o332403.ingest.sentry.io/5693358'
+      ..dsn =
+          'https://6c2ad9cb95f9412d837cc799aca8786e@o332403.ingest.sentry.io/5693358'
       ..debug = false,
-    appRunner: () => runApp(MyApp()),
+    appRunner: () => runApp(const MyApp()),
   );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

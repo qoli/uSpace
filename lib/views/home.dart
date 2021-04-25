@@ -101,7 +101,7 @@ class _HomePage extends HookWidget {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AboutPage(),
+                  builder: (context) => const AboutPage(),
                 ),
               ),
             )
@@ -189,7 +189,7 @@ class _HomePage extends HookWidget {
                       ],
                     );
                   else
-                    child = Empty();
+                    child = const Empty();
                   return AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: child,

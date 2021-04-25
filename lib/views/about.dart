@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uSpace/generated/l10n.dart';
 
 class AboutPage extends StatelessWidget {
+  const AboutPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
