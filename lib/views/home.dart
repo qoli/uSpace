@@ -187,7 +187,6 @@ class _HomePage extends HookWidget {
                                   .contains(item.file.path),
                             ),
                           ),
-                          spawnIsolate: true,
                         ),
                       ],
                     );

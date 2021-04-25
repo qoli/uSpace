@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:equatable/equatable.dart';
 import 'package:uSpace/utils/file.dart';
 
 class FileState {
@@ -14,8 +15,8 @@ class FileState {
   int fileCount;
 }
 
-class FileItem {
-  FileItem(
+class FileItem with EquatableMixin {
+  const FileItem(
     this.file,
     this.isDirectory,
     this.changed,
@@ -23,11 +24,20 @@ class FileItem {
     this.shortPath,
   );
 
-  FileSystemEntity file;
-  bool isDirectory;
-  DateTime changed;
-  String size;
-  String shortPath;
+  final FileSystemEntity file;
+  final bool isDirectory;
+  final DateTime changed;
+  final String size;
+  final String shortPath;
+
+  @override
+  List<Object?> get props => [
+        file.path,
+        isDirectory,
+        changed,
+        size,
+        shortPath,
+      ];
 }
 
 extension FileSystemEntityExtension on FileSystemEntity {
