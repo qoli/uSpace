@@ -78,7 +78,7 @@ class _HomePage extends HookWidget {
     final connectivityResultStream = useStream(
       useMemoized(() => Connectivity().onConnectivityChanged),
       initialData: null,
-    );
+    ).data;
     final localIP = useMemoizedFuture(
       () => getLocalIpAddress(port.value),
       null,
