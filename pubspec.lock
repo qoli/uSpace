@@ -181,7 +181,7 @@ packages:
       name: implicitly_animated_reorderable_list
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.4.0"
   intl:
     dependency: "direct main"
     description:
@@ -494,7 +494,7 @@ packages:
       name: very_good_analysis
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.3"
   watcher:
     dependency: "direct main"
     description:
