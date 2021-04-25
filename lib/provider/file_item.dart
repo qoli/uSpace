@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:uSpace/utils/file_size.dart';
+import 'package:uSpace/utils/file.dart';
 
 class FileState {
   FileState(

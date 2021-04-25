@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:uSpace/class/files.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uSpace/generated/l10n.dart';
 
@@ -101,7 +103,14 @@ class AboutPage extends StatelessWidget {
   }
 
   void _removeAllFiles(BuildContext context) async {
-    await Files().removeAllFiles();
+    final directory = await getApplicationDocumentsDirectory();
+    final files = await directory.list().toList();
+    for (final item in files) {
+      if (!await FileSystemEntity.isDirectory(item.path)) {
+        await item.delete();
+      }
+    }
+
     Navigator.pop(context, 'refresh');
   }
 }

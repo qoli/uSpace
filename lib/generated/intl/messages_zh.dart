@@ -35,7 +35,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "share" : MessageLookupByLibrary.simpleMessage("分享"),
     "starting" : MessageLookupByLibrary.simpleMessage("启动中"),
     "status" : MessageLookupByLibrary.simpleMessage("状态"),
-    "stopped" : MessageLookupByLibrary.simpleMessage("已停止"),
     "uploadFileDes" : MessageLookupByLibrary.simpleMessage("打开网址并上传文件。"),
     "uploading" : MessageLookupByLibrary.simpleMessage("上传中")
   };

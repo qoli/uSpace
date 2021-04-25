@@ -10,9 +10,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/generated/l10n.dart';
-import 'package:uSpace/provider/file/file_provider.dart';
+import 'package:uSpace/provider/file_item.dart';
 import 'package:uSpace/provider/server/http_server_provider.dart';
-import 'package:uSpace/provider/server/server_status.dart';
+import 'package:uSpace/utils/address.dart';
 import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/empty.dart';
 import 'package:uSpace/widget/file_widget.dart';
@@ -73,7 +73,7 @@ class _HomePage extends HookWidget {
       [port.value],
     );
 
-    final status = useValueListenable(httpServerProvider);
+    final state = useValueListenable(httpServerProvider);
 
     final connectivityResultStream = useStream(
       useMemoized(() => Connectivity().onConnectivityChanged),
@@ -119,9 +119,8 @@ class _HomePage extends HookWidget {
                   ServerStatus.starting: L10n.of(context).starting,
                   ServerStatus.running: L10n.of(context).running,
                   ServerStatus.uploading: L10n.of(context).uploading,
-                  ServerStatus.stopped: L10n.of(context).stopped,
                   ServerStatus.error: L10n.of(context).error,
-                }[status]!,
+                }[state.status]!,
                 style: const TextStyle(
                   height: 1.5,
                   fontWeight: FontWeight.w600,
@@ -182,7 +181,11 @@ class _HomePage extends HookWidget {
                             sizeFraction: 0.7,
                             curve: Curves.easeInOut,
                             animation: animation,
-                            child: FileWidget(item: item),
+                            child: FileWidget(
+                              item: item,
+                              uploading: state.uploadingFilePathSet
+                                  .contains(item.file.path),
+                            ),
                           ),
                           spawnIsolate: true,
                         ),

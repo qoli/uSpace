@@ -35,7 +35,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "share" : MessageLookupByLibrary.simpleMessage("Share"),
     "starting" : MessageLookupByLibrary.simpleMessage("Starting"),
     "status" : MessageLookupByLibrary.simpleMessage("Status"),
-    "stopped" : MessageLookupByLibrary.simpleMessage("Stopped"),
     "uploadFileDes" : MessageLookupByLibrary.simpleMessage("Open web and upload your files."),
     "uploading" : MessageLookupByLibrary.simpleMessage("Uploading")
   };

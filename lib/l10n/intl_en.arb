@@ -12,6 +12,5 @@
   "starting": "Starting",
   "running": "Running",
   "uploading": "Uploading",
-  "stopped": "Stopped",
   "error": "Error"
 }

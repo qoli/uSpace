@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
-import 'package:uSpace/provider/file/file_provider.dart';
+import 'package:uSpace/provider/file_item.dart';
 import 'package:uSpace/widget/text_light.dart';
 
 import 'file_action.dart';
@@ -25,9 +25,11 @@ class FileWidget extends HookWidget {
   const FileWidget({
     Key? key,
     required this.item,
+    this.uploading = false,
   }) : super(key: key);
 
   final FileItem item;
+  final bool uploading;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +78,7 @@ class FileWidget extends HookWidget {
 
     return GestureDetector(
       onTap: () {
+        if (uploading) return;
         if (item.isDirectory) return;
         showModalBottomSheet(
           context: context,

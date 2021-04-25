@@ -177,16 +177,6 @@ class L10n {
     );
   }
 
-  /// `Stopped`
-  String get stopped {
-    return Intl.message(
-      'Stopped',
-      name: 'stopped',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Error`
   String get error {
     return Intl.message(

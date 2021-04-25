@@ -6,35 +6,40 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shelf/shelf_io.dart';
-import 'package:uSpace/provider/server/server_status.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:equatable/equatable.dart';
 
-Future<String?> getLocalIpAddress(int port) async {
-  String? ipAddress;
-
-  final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(
-      type: InternetAddressType.IPv4, includeLinkLocal: true));
-  await Sentry.captureMessage(interfaces.toString());
-
-  for (final interface in interfaces) {
-    switch (interface?.name) {
-      case 'en0':
-      case 'wlan0':
-        ipAddress = interface?.addresses.first.address;
-        break;
-
-      default:
-    }
-  }
-
-  return ipAddress;
+enum ServerStatus {
+  starting,
+  running,
+  uploading,
+  error,
 }
 
-class HttpServerProvider extends ValueNotifier<ServerStatus> {
-  HttpServerProvider(this.port) : super(ServerStatus.starting) {
+class ServerState with EquatableMixin {
+  ServerState({
+    required this.serverStatus,
+    this.uploadingFilePathSet = const {},
+  });
+
+  ServerStatus serverStatus;
+  Set<String> uploadingFilePathSet;
+
+  ServerStatus get status =>
+      uploadingFilePathSet.isNotEmpty ? ServerStatus.uploading : serverStatus;
+
+  @override
+  List<Object?> get props => [
+        serverStatus,
+        uploadingFilePathSet,
+      ];
+}
+
+class HttpServerProvider extends ValueNotifier<ServerState> {
+  HttpServerProvider(this.port)
+      : super(ServerState(serverStatus: ServerStatus.starting)) {
     _initHttpServer();
   }
 
@@ -45,26 +50,19 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
   Future<void> _initHttpServer() async {
     directory = await getApplicationDocumentsDirectory();
 
-    var router = Router()
-      ..get('/', _home)
-      ..post('/upload', _upload);
+    try {
+      var router = Router()
+        ..get('/', _home)
+        ..post('/upload', _upload);
 
-    server = await serve(router, '0.0.0.0', port);
+      server = await serve(router, '0.0.0.0', port);
 
-    value = ServerStatus.running;
-    notifyListeners();
-
-    // try {
-    //   final serverVD = await HttpServer.bind('0.0.0.0', port + 1);
-    //   VirtualDirectory(directory.path)
-    //     ..jailRoot = false
-    //     ..followLinks = true
-    //     ..allowDirectoryListing = true
-    //     ..serve(serverVD);
-    // } catch (e) {
-    //   print(e);
-    // }
-
+      value.serverStatus = ServerStatus.running;
+      notifyListeners();
+    } catch (e) {
+      value.serverStatus = ServerStatus.error;
+      notifyListeners();
+    }
     return;
   }
 
@@ -105,17 +103,23 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
         file = File('${directory.path}/${count++}.$filename');
       }
 
-      value = ServerStatus.uploading;
+      final filePath = file.path;
+
+      value.uploadingFilePathSet.add(filePath);
       notifyListeners();
 
-      var fileSink = file.openWrite();
-      await part.pipe(fileSink);
-      await fileSink.close();
+      try {
+        final fileSink = file.openWrite();
+        await part.timeout(const Duration(seconds: 2)).pipe(fileSink);
+        await fileSink.close();
 
-      value = ServerStatus.running;
-      notifyListeners();
-
-      return Response(201, body: 'Upload DONE');
+        return Response(201, body: 'Upload DONE');
+      } catch (_) {
+        await file.delete();
+      } finally {
+        value.uploadingFilePathSet.remove(filePath);
+        notifyListeners();
+      }
     }
     return Response(400);
   }

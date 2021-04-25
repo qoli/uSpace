@@ -12,6 +12,5 @@
   "starting": "启动中",
   "running": "运行中",
   "uploading": "上传中",
-  "stopped": "已停止",
   "error": "错误"
 }

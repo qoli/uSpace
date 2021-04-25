@@ -10,6 +10,7 @@ analyzer:
     # custom
     - 'lib/generated/**'
     - '**.g.dart'
+    - '**/*.freezed.dart'
 
 linter:
   rules:

@@ -6,8 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:share/share.dart';
-import 'package:uSpace/provider/file/file_provider.dart';
 import 'package:uSpace/generated/l10n.dart';
+import 'package:uSpace/provider/file_item.dart';
 
 class FileAction extends HookWidget {
   const FileAction({
