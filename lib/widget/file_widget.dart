@@ -80,18 +80,30 @@ class FileWidget extends HookWidget {
       onTap: () {
         if (uploading) return;
         if (item.isDirectory) return;
-        showModalBottomSheet(
+        showGeneralDialog(
           context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-          ),
-          builder: (ctx) => SafeArea(
-            child: FileAction(item: item),
+          barrierDismissible: true,
+          barrierLabel:
+              MaterialLocalizations.of(context).modalBarrierDismissLabel,
+          pageBuilder: (BuildContext buildContext, Animation<double> animation,
+                  Animation<double> secondaryAnimation) =>
+              InheritedTheme.capture(
+                      from: context,
+                      to: Navigator.of(
+                        context,
+                      ).context)
+                  .wrap(
+            Center(
+              child: SafeArea(
+                minimum: const EdgeInsets.all(16),
+                child: FileAction(item: item),
+              ),
+            ),
           ),
         );
       },
       child: AnimatedOpacity(
-        opacity: uploading ? 0.5: 1,
+        opacity: uploading ? 0.5 : 1,
         duration: const Duration(milliseconds: 200),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),

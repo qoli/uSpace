@@ -23,9 +23,15 @@ class FileAction extends HookWidget {
       () => DateFormat('yyyy-MM-dd hh:mm').format(item.changed),
       [item.changed],
     );
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Container(
+    return Container(
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        color: Theme.of(context).dialogBackgroundColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
