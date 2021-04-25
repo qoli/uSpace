@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uSpace/class/files.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uSpace/generated/l10n.dart';
 
 class AboutPage extends StatelessWidget {
   @override
@@ -16,9 +17,9 @@ class AboutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                'About',
-                style: TextStyle(
+              Text(
+                L10n.of(context).about,
+                style: const TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   height: 1,
@@ -48,11 +49,11 @@ class AboutPage extends StatelessWidget {
                         const url = 'http://github.com/qoli/uSpace';
                         if (await canLaunch(url)) await launch(url);
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Github Project',
-                          style: TextStyle(
+                          L10n.of(context).githubProject,
+                          style: const TextStyle(
                             color: Colors.white,
                           ),
                         ),
@@ -76,11 +77,11 @@ class AboutPage extends StatelessWidget {
                         elevation: 0,
                       ),
                       onPressed: () => _removeAllFiles(context),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Remove All Files',
-                          style: TextStyle(
+                          L10n.of(context).removeAllFiles,
+                          style: const TextStyle(
                             color: Colors.white,
                           ),
                         ),

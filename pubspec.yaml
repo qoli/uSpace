@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   intl: ^0.17.0
   http_server: ^1.0.0
@@ -42,3 +44,7 @@ flutter:
   assets:
     - assets/
     - assets/upload.html
+flutter_intl:
+  enabled: true
+  class_name: L10n
+  use_deferred_loading: true

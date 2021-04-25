@@ -8,6 +8,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/provider/file/file_provider.dart';
+import 'package:uSpace/generated/l10n.dart';
 
 class FileAction extends HookWidget {
   const FileAction({
@@ -91,11 +92,11 @@ class FileAction extends HookWidget {
                     Navigator.pop(context);
                     Share.shareFiles([item.file.path]);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Share',
-                      style: TextStyle(
+                      L10n.of(context).share,
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
@@ -157,10 +158,12 @@ class _DeleteButton extends HookWidget {
                 duration: const Duration(milliseconds: 200),
                 vsync: tickerProvider,
                 child: confirmDelete.value
-                    ? const Padding(
-                        padding: EdgeInsets.only(left: 14),
-                        child: Text('Delete',
-                            style: TextStyle(color: Colors.white)),
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 14),
+                        child: Text(
+                          L10n.of(context).delete,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       )
                     : const SizedBox(),
               ),

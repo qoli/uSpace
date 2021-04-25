@@ -1,0 +1,17 @@
+{
+  "githubProject": "Github 项目",
+  "removeAllFiles": "删除所有文件",
+  "about": "关于",
+  "noFiles": "没有文件",
+  "share": "分享",
+  "delete": "删除",
+  "status": "状态",
+  "server": "服务器",
+  "fileCount" : "共 {count} 个文件",
+  "uploadFileDes": "打开网址并上传文件。",
+  "starting": "启动中",
+  "running": "运行中",
+  "uploading": "上传中",
+  "stopped": "已停止",
+  "error": "错误"
+}

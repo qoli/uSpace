@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:uSpace/widget/text_light.dart';
+import 'package:uSpace/generated/l10n.dart';
 
 class Empty extends StatelessWidget {
   @override
@@ -15,15 +16,15 @@ class Empty extends StatelessWidget {
               ),
             ),
           ),
-          const Text(
-            'No Files',
-            style: TextStyle(
+          Text(
+            L10n.of(context).noFiles,
+            style: const TextStyle(
               height: 1.5,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
-          const TextLight('Open web and upload your files.'),
+          TextLight(L10n.of(context).uploadFileDes),
         ],
       );
 }

@@ -1,0 +1,17 @@
+{
+  "githubProject": "Github Project",
+  "removeAllFiles": "Remove All Files",
+  "about": "About",
+  "noFiles": "No Files",
+  "share": "Share",
+  "delete": "Delete",
+  "status": "Status",
+  "server": "Server",
+  "fileCount" : "Files {count}",
+  "uploadFileDes": "Open web and upload your files.",
+  "starting": "Starting",
+  "running": "Running",
+  "uploading": "Uploading",
+  "stopped": "Stopped",
+  "error": "Error"
+}

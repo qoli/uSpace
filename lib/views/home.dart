@@ -8,7 +8,7 @@ import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
-import 'package:uSpace/config.dart';
+import 'package:uSpace/generated/l10n.dart';
 import 'package:uSpace/provider/file/file_provider.dart';
 import 'package:uSpace/provider/server/http_server_provider.dart';
 import 'package:uSpace/provider/server/server_status.dart';
@@ -67,7 +67,7 @@ class _HomePage extends HookWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: const Text(
-            AppConfig.appName,
+            'uSpace',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           actions: [
@@ -96,16 +96,22 @@ class _HomePage extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              const TextLight('Status:'),
+              TextLight('${L10n.of(context).status}: '),
               Text(
-                serverStatusStringMap[status]!,
+                {
+                  ServerStatus.starting: L10n.of(context).starting,
+                  ServerStatus.running: L10n.of(context).running,
+                  ServerStatus.uploading: L10n.of(context).uploading,
+                  ServerStatus.stopped: L10n.of(context).stopped,
+                  ServerStatus.error: L10n.of(context).error,
+                }[status]!,
                 style: const TextStyle(
                   height: 1.5,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 16),
-              const TextLight('Server:'),
+              TextLight('${L10n.of(context).server}:'),
               GestureDetector(
                 onTap: () {
                   if (localIP.data == null) return;
@@ -116,9 +122,12 @@ class _HomePage extends HookWidget {
                 child: Row(
                   children: [
                     Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 140),
                       child: Text(
-                        localIP.data != null ? '${localIP.data}:${port.value}' : '...',
+                        localIP.data != null
+                            ? '${localIP.data}:${port.value}'
+                            : '...',
                         style: const TextStyle(
                           height: 1.5,
                           fontWeight: FontWeight.w600,
@@ -126,7 +135,8 @@ class _HomePage extends HookWidget {
                       ),
                     ),
                     const Spacer(),
-                    if (localIP.data != null) const Icon(Ionicons.copy_outline, size: 16)
+                    if (localIP.data != null)
+                      const Icon(Ionicons.copy_outline, size: 16)
                   ],
                 ),
               ),
@@ -139,7 +149,9 @@ class _HomePage extends HookWidget {
                   if (fileState.fileCount > 0)
                     child = CustomScrollView(
                       slivers: [
-                        SliverToBoxAdapter(child: TextLight('Files (${fileState.fileCount})')),
+                        SliverToBoxAdapter(
+                            child: TextLight(L10n.of(context)
+                                .fileCount(fileState.fileCount))),
                         SliverImplicitlyAnimatedList<FileItem>(
                           items: fileState.files,
                           areItemsTheSame: (a, b) => a.file.path == b.file.path,
