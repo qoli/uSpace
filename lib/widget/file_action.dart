@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,9 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/generated/l10n.dart';
 import 'package:uSpace/provider/file_item.dart';
+import 'package:watcher/watcher.dart';
 
 class FileAction extends HookWidget {
   const FileAction({
@@ -131,6 +134,9 @@ class _DeleteButton extends HookWidget {
         }
         Navigator.pop(context);
         await file.delete();
+        context
+            .read<StreamController<WatchEvent>>()
+            .add(WatchEvent(ChangeType.REMOVE, file.path));
       },
       child: AnimatedContainer(
         decoration: BoxDecoration(

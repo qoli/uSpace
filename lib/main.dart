@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uSpace/views/home.dart';
 import 'package:uSpace/generated/l10n.dart';
+import 'package:watcher/watcher.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,25 +24,30 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends HookWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'uSpace',
-      theme: lightTheme,
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
-      localizationsDelegates: const [
-        L10n.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: L10n.delegate.supportedLocales,
-      home: const HomePage(),
+    final watchEventStreamController = useStreamController<WatchEvent>();
+
+    return Provider.value(
+      value: watchEventStreamController,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'uSpace',
+        theme: lightTheme,
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.system,
+        localizationsDelegates: const [
+          L10n.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: L10n.delegate.supportedLocales,
+        home: const HomePage(),
+      ),
     );
   }
 

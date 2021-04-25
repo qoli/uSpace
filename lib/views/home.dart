@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +20,7 @@ import 'package:uSpace/widget/empty.dart';
 import 'package:uSpace/widget/file_widget.dart';
 import 'package:uSpace/widget/text_light.dart';
 import 'package:watcher/watcher.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'about.dart';
 
@@ -48,12 +51,16 @@ class _HomePage extends HookWidget {
 
     final state = useValueListenable(httpServerProvider);
 
+
+    final watchEventStreamController = context.read<StreamController<WatchEvent>>();
     final watchEvent = useStream(
       useMemoizedFuture(
-        () async =>
-            DirectoryWatcher((await getApplicationDocumentsDirectory()).path)
-                .events,
-        null,
+        () async => Rx.merge([
+          watchEventStreamController.stream,
+          DirectoryWatcher((await getApplicationDocumentsDirectory()).path)
+              .events,
+        ]),
+        watchEventStreamController.stream,
       ).data,
       initialData: null,
     ).data;
@@ -72,7 +79,7 @@ class _HomePage extends HookWidget {
         );
       },
       null,
-      keys: [watchEvent, ...state.uploadingFilePathSet],
+      keys: [watchEvent?.type, watchEvent?.path, ...state.uploadingFilePathSet],
     ).data;
 
     final connectivityResultStream = useStream(

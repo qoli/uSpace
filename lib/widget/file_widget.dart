@@ -115,24 +115,24 @@ class FileWidget extends HookWidget {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(state.icon, color: state.listColor, size: 16),
                   const SizedBox(width: 8),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width - 150),
-                    child: Text(
-                      item.shortPath,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        height: 1,
+                  Expanded(
+                    child: Container(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 150),
+                      child: Text(
+                        item.shortPath,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          height: 1,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Spacer(),
                   // maybe display 'Folder'
                   TextLight(item.size),
                 ],
