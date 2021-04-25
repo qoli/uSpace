@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:uSpace/utils/file_size.dart';
 
 class FileState {
@@ -33,7 +31,7 @@ class FileItem {
 }
 
 extension FileSystemEntityExtension on FileSystemEntity {
-  Future<FileItem> _toFileItem(Directory directory) async {
+  Future<FileItem> toFileItem(Directory directory) async {
     var sizeText = 'Folder';
 
     if (!await FileSystemEntity.isDirectory(path)) {
@@ -46,24 +44,5 @@ extension FileSystemEntityExtension on FileSystemEntity {
         (await FileStat.stat(path)).changed,
         sizeText,
         path.replaceAll('${directory.path}/', ''));
-  }
-}
-
-class FileProvider extends ValueNotifier<FileState> {
-  FileProvider() : super(FileState(null)) {
-    refresh();
-  }
-
-  Future<void> refresh() async {
-    final directory = await getApplicationDocumentsDirectory();
-    var files = await directory.list().toList();
-    var list = await Future.wait(files.map((e) => e._toFileItem(directory)));
-    list.sort((a, b) => b.changed.compareTo(a.changed));
-    value = FileState(
-      directory,
-      list,
-      list.where((element) => !element.isDirectory).length,
-    );
-    notifyListeners();
   }
 }

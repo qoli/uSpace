@@ -13,7 +13,7 @@ Future<String?> getLocalIpAddress(int port) async {
   final interfaces = List<NetworkInterface?>.of(await NetworkInterface.list(type: InternetAddressType.IPv4, includeLinkLocal: true));
   await Sentry.captureMessage(interfaces.toString());
 
-  for (var interface in interfaces) {
+  for (final interface in interfaces) {
     switch (interface?.name) {
       case 'en0':
       case 'wlan0':
@@ -28,12 +28,11 @@ Future<String?> getLocalIpAddress(int port) async {
 }
 
 class HttpServerProvider extends ValueNotifier<ServerStatus> {
-  HttpServerProvider(this.port, this.onNew) : super(ServerStatus.starting) {
+  HttpServerProvider(this.port) : super(ServerStatus.starting) {
     _initHttpServer();
   }
 
   final int port;
-  final void Function() onNew;
   HttpServer? server;
 
   Future<void> _initHttpServer() async {
@@ -48,7 +47,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
     }
 
     // try {
-    //   var serverVD = await HttpServer.bind('0.0.0.0', port + 1);
+    //   final serverVD = await HttpServer.bind('0.0.0.0', port + 1);
     //   VirtualDirectory(directory.path)
     //     ..jailRoot = false
     //     ..followLinks = true
@@ -104,7 +103,6 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
 
             _http(body, 201);
 
-            onNew();
           } catch (e) {
             await file.delete();
             value = ServerStatus.error;
@@ -114,7 +112,7 @@ class HttpServerProvider extends ValueNotifier<ServerStatus> {
           break;
 
         case '/':
-          var _content = await rootBundle.loadString('assets/upload.html');
+          final _content = await rootBundle.loadString('assets/upload.html');
           body.request.response.statusCode = 200;
           body.request.response.headers.set('Content-Type', 'text/html; charset=utf-8');
           body.request.response.write(_content);

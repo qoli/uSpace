@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/generated/l10n.dart';
@@ -16,6 +17,7 @@ import 'package:uSpace/utils/hook.dart';
 import 'package:uSpace/widget/empty.dart';
 import 'package:uSpace/widget/file_widget.dart';
 import 'package:uSpace/widget/text_light.dart';
+import 'package:watcher/watcher.dart';
 
 import 'about.dart';
 
@@ -39,18 +41,41 @@ class _HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final port = useState(8020);
 
-    var fileProvider = useChangeNotifier(() => FileProvider());
+    final watchEvent = useStream(
+      useMemoizedFuture(
+        () async =>
+            DirectoryWatcher((await getApplicationDocumentsDirectory()).path)
+                .events,
+        null,
+      ).data,
+      initialData: null,
+    ).data;
 
-    var httpServerProvider = useChangeNotifier(
-      () => HttpServerProvider(port.value, () => fileProvider.refresh()),
+    final fileState = useMemoizedFuture(
+      () async {
+        final directory = await getApplicationDocumentsDirectory();
+        final files = await directory.list().toList();
+        final list =
+            await Future.wait(files.map((e) => e.toFileItem(directory)));
+        list.sort((a, b) => b.changed.compareTo(a.changed));
+        return FileState(
+          directory,
+          list,
+          list.where((element) => !element.isDirectory).length,
+        );
+      },
+      null,
+      keys: [watchEvent],
+    ).data;
+
+    final httpServerProvider = useChangeNotifier(
+      () => HttpServerProvider(port.value),
       [port.value],
     );
 
     final status = useValueListenable(httpServerProvider);
 
-    final fileState = useValueListenable(fileProvider);
-
-    var connectivityResultStream = useStream(
+    final connectivityResultStream = useStream(
       useMemoized(() => Connectivity().onConnectivityChanged),
       initialData: null,
     );
@@ -60,8 +85,8 @@ class _HomePage extends HookWidget {
       keys: [port.value, connectivityResultStream],
     );
 
-    return ChangeNotifierProvider.value(
-      value: fileProvider,
+    return Provider.value(
+      value: fileState,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -73,20 +98,12 @@ class _HomePage extends HookWidget {
           actions: [
             IconButton(
               icon: const Icon(Ionicons.help_outline),
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AboutPage(),
-                  ),
-                );
-                switch (result) {
-                  case 'refresh':
-                    await fileProvider.refresh();
-                    break;
-                  default:
-                }
-              },
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AboutPage(),
+                ),
+              ),
             )
           ],
         ),
@@ -115,7 +132,7 @@ class _HomePage extends HookWidget {
               GestureDetector(
                 onTap: () {
                   if (localIP.data == null) return;
-                  var url = 'http://${localIP.data}:${port.value}';
+                  final url = 'http://${localIP.data}:${port.value}';
                   Clipboard.setData(ClipboardData(text: url));
                   Share.share(url);
                 },
@@ -146,7 +163,7 @@ class _HomePage extends HookWidget {
               Expanded(
                 child: Builder(builder: (context) {
                   Widget child;
-                  if (fileState.fileCount > 0)
+                  if (fileState != null && fileState.fileCount > 0)
                     child = CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(

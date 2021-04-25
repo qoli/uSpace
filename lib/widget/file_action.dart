@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:uSpace/provider/file/file_provider.dart';
 import 'package:uSpace/generated/l10n.dart';
@@ -20,8 +19,6 @@ class FileAction extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fileProvider = useContext().read<FileProvider>();
-
     final date = useMemoized(
       () => DateFormat('yyyy-MM-dd hh:mm').format(item.changed),
       [item.changed],
@@ -69,10 +66,7 @@ class FileAction extends HookWidget {
                     ),
                   ),
                 ),
-                _DeleteButton(
-                  file: item.file,
-                  onRemove: () => fileProvider.refresh(),
-                )
+                _DeleteButton(file: item.file)
               ],
             ),
             const SizedBox(height: 16),
@@ -115,16 +109,14 @@ class _DeleteButton extends HookWidget {
   const _DeleteButton({
     Key? key,
     required this.file,
-    required this.onRemove,
   }) : super(key: key);
 
   final FileSystemEntity file;
-  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
-    var confirmDelete = useState(false);
-    var tickerProvider = useSingleTickerProvider();
+    final confirmDelete = useState(false);
+    final tickerProvider = useSingleTickerProvider();
     return GestureDetector(
       onTap: () async {
         if (!confirmDelete.value) {
@@ -133,7 +125,6 @@ class _DeleteButton extends HookWidget {
         }
         Navigator.pop(context);
         await file.delete();
-        onRemove?.call();
       },
       child: AnimatedContainer(
         decoration: BoxDecoration(

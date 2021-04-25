@@ -15,7 +15,7 @@ AsyncSnapshot<T> useMemoizedFuture<T>(
     );
 
 T useChangeNotifier<T extends ChangeNotifier>(T Function() valueBuilder, [List<Object?> keys = const <Object>[]]) {
-  var changeNotifier = useMemoized(
+  final changeNotifier = useMemoized(
     valueBuilder,
     keys,
   );

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
-import 'package:provider/provider.dart';
 import 'package:uSpace/provider/file/file_provider.dart';
 import 'package:uSpace/widget/text_light.dart';
 
@@ -32,9 +31,7 @@ class FileWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fileProvider = useContext().read<FileProvider>();
-
-    var state = useMemoized(() {
+    final state = useMemoized(() {
       final mimeType = lookupMimeType(item.file.path);
       var icon = Ionicons.document_outline;
       var listColor = Theme.of(context).primaryIconTheme.color!;
@@ -85,11 +82,8 @@ class FileWidget extends HookWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
           ),
-          builder: (ctx) => ChangeNotifierProvider.value(
-            value: fileProvider,
-            child: SafeArea(
-              child: FileAction(item: item),
-            ),
+          builder: (ctx) => SafeArea(
+            child: FileAction(item: item),
           ),
         );
       },

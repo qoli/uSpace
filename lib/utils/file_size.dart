@@ -1,5 +1,5 @@
 String fileSize(int size, [int round = 2]) {
-  var divider = 1000;
+  final divider = 1000;
 
   if (size < divider) {
     return '$size B';

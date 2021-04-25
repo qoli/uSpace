@@ -7,8 +7,8 @@ class Files {
 
   Future<void> removeAllFiles() async {
     directory = await getApplicationDocumentsDirectory();
-    var files = await directory!.list().toList();
-    for (var item in files) {
+    final files = await directory!.list().toList();
+    for (final item in files) {
       if (!await FileSystemEntity.isDirectory(item.path)) {
         await item.delete();
       }
