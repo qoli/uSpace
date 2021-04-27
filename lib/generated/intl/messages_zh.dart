@@ -22,20 +22,20 @@ class MessageLookup extends MessageLookupByLibrary {
   static m0(count) => "共 ${count} 个文件";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "about" : MessageLookupByLibrary.simpleMessage("关于"),
-    "delete" : MessageLookupByLibrary.simpleMessage("删除"),
-    "error" : MessageLookupByLibrary.simpleMessage("错误"),
-    "fileCount" : m0,
-    "githubProject" : MessageLookupByLibrary.simpleMessage("Github 项目"),
-    "noFiles" : MessageLookupByLibrary.simpleMessage("没有文件"),
-    "removeAllFiles" : MessageLookupByLibrary.simpleMessage("删除所有文件"),
-    "running" : MessageLookupByLibrary.simpleMessage("运行中"),
-    "server" : MessageLookupByLibrary.simpleMessage("服务器"),
-    "share" : MessageLookupByLibrary.simpleMessage("分享"),
-    "starting" : MessageLookupByLibrary.simpleMessage("启动中"),
-    "status" : MessageLookupByLibrary.simpleMessage("状态"),
-    "uploadFileDes" : MessageLookupByLibrary.simpleMessage("打开网址并上传文件。"),
-    "uploading" : MessageLookupByLibrary.simpleMessage("上传中")
-  };
+  static _notInlinedMessages(_) => <String, Function>{
+        "about": MessageLookupByLibrary.simpleMessage("关于"),
+        "delete": MessageLookupByLibrary.simpleMessage("删除"),
+        "error": MessageLookupByLibrary.simpleMessage("错误"),
+        "fileCount": m0,
+        "githubProject": MessageLookupByLibrary.simpleMessage("Github 项目"),
+        "noFiles": MessageLookupByLibrary.simpleMessage("没有文件"),
+        "removeAllFiles": MessageLookupByLibrary.simpleMessage("删除所有文件"),
+        "running": MessageLookupByLibrary.simpleMessage("运行中"),
+        "server": MessageLookupByLibrary.simpleMessage("服务器"),
+        "share": MessageLookupByLibrary.simpleMessage("分享"),
+        "starting": MessageLookupByLibrary.simpleMessage("启动中"),
+        "status": MessageLookupByLibrary.simpleMessage("状态"),
+        "uploadFileDes": MessageLookupByLibrary.simpleMessage("打开网址并上传文件。"),
+        "uploading": MessageLookupByLibrary.simpleMessage("上传中")
+      };
 }

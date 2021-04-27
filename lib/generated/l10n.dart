@@ -18,28 +18,31 @@ class L10n {
   static L10n? _current;
 
   static L10n get current {
-    assert(_current != null, 'No instance of L10n was loaded. Try to initialize the L10n delegate before accessing L10n.current.');
+    assert(_current != null,
+        'No instance of L10n was loaded. Try to initialize the L10n delegate before accessing L10n.current.');
     return _current!;
   }
 
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<L10n> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       final instance = L10n();
       L10n._current = instance;
- 
+
       return instance;
     });
-  } 
+  }
 
   static L10n of(BuildContext context) {
     final instance = L10n.maybeOf(context);
-    assert(instance != null, 'No instance of L10n present in the widget tree. Did you add L10n.delegate in localizationsDelegates?');
+    assert(instance != null,
+        'No instance of L10n present in the widget tree. Did you add L10n.delegate in localizationsDelegates?');
     return instance!;
   }
 

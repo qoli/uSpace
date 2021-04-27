@@ -22,20 +22,22 @@ class MessageLookup extends MessageLookupByLibrary {
   static m0(count) => "Files ${count}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "about" : MessageLookupByLibrary.simpleMessage("About"),
-    "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
-    "error" : MessageLookupByLibrary.simpleMessage("Error"),
-    "fileCount" : m0,
-    "githubProject" : MessageLookupByLibrary.simpleMessage("Github Project"),
-    "noFiles" : MessageLookupByLibrary.simpleMessage("No Files"),
-    "removeAllFiles" : MessageLookupByLibrary.simpleMessage("Remove All Files"),
-    "running" : MessageLookupByLibrary.simpleMessage("Running"),
-    "server" : MessageLookupByLibrary.simpleMessage("Server"),
-    "share" : MessageLookupByLibrary.simpleMessage("Share"),
-    "starting" : MessageLookupByLibrary.simpleMessage("Starting"),
-    "status" : MessageLookupByLibrary.simpleMessage("Status"),
-    "uploadFileDes" : MessageLookupByLibrary.simpleMessage("Open web and upload your files."),
-    "uploading" : MessageLookupByLibrary.simpleMessage("Uploading")
-  };
+  static _notInlinedMessages(_) => <String, Function>{
+        "about": MessageLookupByLibrary.simpleMessage("About"),
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "error": MessageLookupByLibrary.simpleMessage("Error"),
+        "fileCount": m0,
+        "githubProject": MessageLookupByLibrary.simpleMessage("Github Project"),
+        "noFiles": MessageLookupByLibrary.simpleMessage("No Files"),
+        "removeAllFiles":
+            MessageLookupByLibrary.simpleMessage("Remove All Files"),
+        "running": MessageLookupByLibrary.simpleMessage("Running"),
+        "server": MessageLookupByLibrary.simpleMessage("Server"),
+        "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "starting": MessageLookupByLibrary.simpleMessage("Starting"),
+        "status": MessageLookupByLibrary.simpleMessage("Status"),
+        "uploadFileDes": MessageLookupByLibrary.simpleMessage(
+            "Open web and upload your files."),
+        "uploading": MessageLookupByLibrary.simpleMessage("Uploading")
+      };
 }
