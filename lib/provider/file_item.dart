@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:uSpace/utils/file.dart';
+import 'package:uspace/utils/file.dart';
 
 class FileState {
   FileState(
@@ -48,11 +48,6 @@ extension FileSystemEntityExtension on FileSystemEntity {
       sizeText = fileSize(await File(path).length());
     }
 
-    return FileItem(
-        this,
-        await FileSystemEntity.isDirectory(path),
-        (await FileStat.stat(path)).changed,
-        sizeText,
-        path.replaceAll('${directory.path}/', ''));
+    return FileItem(this, await FileSystemEntity.isDirectory(path), (await FileStat.stat(path)).changed, sizeText, path.replaceAll('${directory.path}/', ''));
   }
 }

@@ -4,8 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:uSpace/views/home.dart';
-import 'package:uSpace/generated/l10n.dart';
+import 'package:uspace/generated/l10n.dart';
+import 'package:uspace/views/home.dart';
 import 'package:watcher/watcher.dart';
 
 Future<void> main() async {
@@ -17,8 +17,7 @@ Future<void> main() async {
 
   await SentryFlutter.init(
     (options) => options
-      ..dsn =
-          'https://6c2ad9cb95f9412d837cc799aca8786e@o332403.ingest.sentry.io/5693358'
+      ..dsn = 'https://6c2ad9cb95f9412d837cc799aca8786e@o332403.ingest.sentry.io/5693358'
       ..debug = false,
     appRunner: () => runApp(const MyApp()),
   );

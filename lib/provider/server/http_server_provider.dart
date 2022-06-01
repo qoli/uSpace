@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shelf/shelf_io.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
-import 'package:equatable/equatable.dart';
 
 enum ServerStatus {
   starting,
@@ -27,8 +27,7 @@ class ServerState with EquatableMixin {
   ServerStatus serverStatus;
   Set<String> uploadingFilePathSet;
 
-  ServerStatus get status =>
-      uploadingFilePathSet.isNotEmpty ? ServerStatus.uploading : serverStatus;
+  ServerStatus get status => uploadingFilePathSet.isNotEmpty ? ServerStatus.uploading : serverStatus;
 
   @override
   List<Object?> get props => [
@@ -89,11 +88,7 @@ class HttpServerProvider extends ValueNotifier<ServerState> {
     var boundary = header.parameters['boundary'];
     if (boundary == null) return Response(400);
 
-    await for (final part in request
-        .read()
-        .cast<Uint8List>()
-        .map((Uint8List event) => event.toList())
-        .transform(MimeMultipartTransformer(boundary))) {
+    await for (final part in request.read().cast<Uint8List>().map((Uint8List event) => event.toList()).transform(MimeMultipartTransformer(boundary))) {
       final contentDisposition = part.headers['content-disposition'];
       if (contentDisposition == null) continue;
       header = HeaderValue.parse(contentDisposition);

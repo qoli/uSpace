@@ -14,24 +14,26 @@ A Flutter project.
 
 Android Version: [Releases ](https://github.com/qoli/uSpace/releases)
 
-iOS Version: https://apps.apple.com/us/app/uspace/id1559410346 
-
-
+iOS Version: https://apps.apple.com/us/app/uspace/id1559410346
 
 ## Flutter SDK
 
 ```bash
 $ fvm flutter --version
-Flutter 2.0.3 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision 4d7946a68d (2 days ago) • 2021-03-18 17:24:33 -0700
-Engine • revision 3459eb2436
-Tools • Dart 2.12.2
+Flutter 3.0.0 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision ee4e09cce0 (3 weeks ago) • 2022-05-09 16:45:18 -0700
+Engine • revision d1b9a6938a
+Tools • Dart 2.17.0 • DevTools 2.12.2
 ```
-
-
 
 ## Build
 
 ```bash
 flutter build apk --no-sound-null-safety
+```
+
+### Build icon
+
+```bash
+fvm flutter pub run flutter_launcher_icons:main
 ```

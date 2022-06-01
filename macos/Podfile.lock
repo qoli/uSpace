@@ -1,0 +1,60 @@
+PODS:
+  - connectivity_macos (0.0.1):
+    - FlutterMacOS
+    - Reachability
+  - FlutterMacOS (1.0.0)
+  - package_info_plus_macos (0.0.1):
+    - FlutterMacOS
+  - path_provider_macos (0.0.1):
+    - FlutterMacOS
+  - Reachability (3.2)
+  - Sentry (7.11.0):
+    - Sentry/Core (= 7.11.0)
+  - Sentry/Core (7.11.0)
+  - sentry_flutter (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - Sentry (~> 7.11.0)
+  - url_launcher_macos (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - connectivity_macos (from `Flutter/ephemeral/.symlinks/plugins/connectivity_macos/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - package_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus_macos/macos`)
+  - path_provider_macos (from `Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos`)
+  - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
+  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+
+SPEC REPOS:
+  trunk:
+    - Reachability
+    - Sentry
+
+EXTERNAL SOURCES:
+  connectivity_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/connectivity_macos/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  package_info_plus_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus_macos/macos
+  path_provider_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos
+  sentry_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos
+  url_launcher_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+
+SPEC CHECKSUMS:
+  connectivity_macos: 5dae6ee11d320fac7c05f0d08bd08fc32b5514d9
+  FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
+  package_info_plus_macos: f010621b07802a241d96d01876d6705f15e77c1c
+  path_provider_macos: 3c0c3b4b0d4a76d2bf989a913c2de869c5641a19
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341
+  sentry_flutter: efb3df2c203cd03aad255892a8d628a458656d14
+  url_launcher_macos: 597e05b8e514239626bcf4a850fcf9ef5c856ec3
+
+PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
+
+COCOAPODS: 1.11.3

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:uSpace/widget/text_light.dart';
-import 'package:uSpace/generated/l10n.dart';
+import 'package:uspace/generated/l10n.dart';
+import 'package:uspace/widget/text_light.dart';
 
 class Empty extends StatelessWidget {
   const Empty({Key? key}) : super(key: key);

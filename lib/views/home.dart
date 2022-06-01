@@ -3,24 +3,23 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
-import 'package:uSpace/generated/l10n.dart';
-import 'package:uSpace/provider/file_item.dart';
-import 'package:uSpace/provider/server/http_server_provider.dart';
-import 'package:uSpace/utils/address.dart';
-import 'package:uSpace/utils/hook.dart';
-import 'package:uSpace/widget/empty.dart';
-import 'package:uSpace/widget/file_widget.dart';
-import 'package:uSpace/widget/text_light.dart';
-import 'package:watcher/watcher.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:share/share.dart';
+import 'package:uspace/generated/l10n.dart';
+import 'package:uspace/provider/file_item.dart';
+import 'package:uspace/provider/server/http_server_provider.dart';
+import 'package:uspace/utils/address.dart';
+import 'package:uspace/utils/hook.dart';
+import 'package:uspace/widget/empty.dart';
+import 'package:uspace/widget/file_widget.dart';
+import 'package:uspace/widget/text_light.dart';
+import 'package:watcher/watcher.dart';
 
 import 'about.dart';
 
@@ -40,14 +39,12 @@ class HomePage extends HookWidget {
 
     final state = useValueListenable(httpServerProvider);
 
-    final watchEventStreamController =
-        context.read<StreamController<WatchEvent>>();
+    final watchEventStreamController = context.read<StreamController<WatchEvent>>();
     final watchEvent = useStream(
       useMemoizedFuture(
         () async => Rx.merge([
           watchEventStreamController.stream,
-          DirectoryWatcher((await getApplicationDocumentsDirectory()).path)
-              .events,
+          DirectoryWatcher((await getApplicationDocumentsDirectory()).path).events,
         ]),
         watchEventStreamController.stream,
       ).data,
@@ -58,8 +55,7 @@ class HomePage extends HookWidget {
       () async {
         final directory = await getApplicationDocumentsDirectory();
         final files = await directory.list().toList();
-        final list =
-            await Future.wait(files.map((e) => e.toFileItem(directory)));
+        final list = await Future.wait(files.map((e) => e.toFileItem(directory)));
         list.sort((a, b) => b.changed.compareTo(a.changed));
         return FileState(
           directory,
@@ -135,12 +131,9 @@ class HomePage extends HookWidget {
                 child: Row(
                   children: [
                     Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width - 140),
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
                       child: Text(
-                        localIP.data != null
-                            ? '${localIP.data}:${port.value}'
-                            : '...',
+                        localIP.data != null ? '${localIP.data}:${port.value}' : '...',
                         style: const TextStyle(
                           height: 1.5,
                           fontWeight: FontWeight.w600,
@@ -148,8 +141,7 @@ class HomePage extends HookWidget {
                       ),
                     ),
                     const Spacer(),
-                    if (localIP.data != null)
-                      const Icon(Ionicons.copy_outline, size: 16)
+                    if (localIP.data != null) const Icon(Ionicons.copy_outline, size: 16)
                   ],
                 ),
               ),
@@ -162,9 +154,7 @@ class HomePage extends HookWidget {
                   if (fileState != null && fileState.fileCount > 0)
                     child = CustomScrollView(
                       slivers: [
-                        SliverToBoxAdapter(
-                            child: TextLight(L10n.of(context)
-                                .fileCount(fileState.fileCount))),
+                        SliverToBoxAdapter(child: TextLight(L10n.of(context).fileCount(fileState.fileCount))),
                         SliverImplicitlyAnimatedList<FileItem>(
                           items: fileState.files,
                           areItemsTheSame: (a, b) => a.file.path == b.file.path,
@@ -180,8 +170,7 @@ class HomePage extends HookWidget {
                             animation: animation,
                             child: FileWidget(
                               item: item,
-                              uploading: state.uploadingFilePathSet
-                                  .contains(item.file.path),
+                              uploading: state.uploadingFilePathSet.contains(item.file.path),
                             ),
                           ),
                         ),

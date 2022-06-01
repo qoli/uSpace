@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:mime/mime.dart';
-import 'package:uSpace/provider/file_item.dart';
-import 'package:uSpace/widget/text_light.dart';
+import 'package:uspace/provider/file_item.dart';
+import 'package:uspace/widget/text_light.dart';
 
 import 'file_action.dart';
 
@@ -83,16 +81,13 @@ class FileWidget extends HookWidget {
         showGeneralDialog(
           context: context,
           barrierDismissible: true,
-          barrierLabel:
-              MaterialLocalizations.of(context).modalBarrierDismissLabel,
-          pageBuilder: (BuildContext buildContext, Animation<double> animation,
-                  Animation<double> secondaryAnimation) =>
-              InheritedTheme.capture(
-                      from: context,
-                      to: Navigator.of(
-                        context,
-                      ).context)
-                  .wrap(
+          barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+          pageBuilder: (BuildContext buildContext, Animation<double> animation, Animation<double> secondaryAnimation) => InheritedTheme.capture(
+                  from: context,
+                  to: Navigator.of(
+                    context,
+                  ).context)
+              .wrap(
             Center(
               child: SafeArea(
                 minimum: const EdgeInsets.all(16),
@@ -120,8 +115,7 @@ class FileWidget extends HookWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width - 150),
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 150),
                       child: Text(
                         item.shortPath,
                         style: const TextStyle(
